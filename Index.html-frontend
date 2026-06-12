@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pi App</title>
+  <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+</head>
+<body>
+  <h1>Pi Network Login</h1>
+  <button onclick="doPiAuth()">Sign in with Pi</button>
+  <p id="user"></p>
+
+  <script>
+    Pi.init()
+
+    async function doPiAuth() {
+      try {
+        const auth = await Pi.authenticate(['username'])
+        const res = await fetch('/auth/pi', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ accessToken: auth.accessToken })
+        })
+        const data = await res.json()
+        document.getElementById('user').innerText = 'Logged in as: ' + data.username
+      } catch (e) {
+        console.log(e)
+      }
+    }
+
+    // Auto login pas buka app
+    window.onload = doPiAuth
+  </script>
+</body>
+</html>
