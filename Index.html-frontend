@@ -17,13 +17,16 @@
         const auth = await Pi.authenticate(['username', 'payments'], function(payment) {
   console.log("Payment callback:", payment);
 })
-        const res = await fetch('/auth/pi', {
+        const res = await fetch('/api/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ accessToken: auth.accessToken })
-        })
+          body: JSON.stringify({ 
+  accessToken: auth.accessToken,
+  username: auth.user.username,
+  uid: auth.user.uid
+})
         const data = await res.json()
-        document.getElementById('user').innerText = 'Logged in as: ' + data.username
+        document.getElementById('user').innerText = 'Logged in as: ' + data.user.username
       } catch (e) {
         console.log(e)
       }
