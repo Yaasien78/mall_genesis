@@ -10,11 +10,13 @@
   <p id="user"></p>
 
   <script>
-    Pi.init()
+    Pi.init({ version: "2.0", sandbox: true })
 
     async function doPiAuth() {
       try {
-        const auth = await Pi.authenticate(['username'])
+        const auth = await Pi.authenticate(['username', 'payments'], function(payment) {
+  console.log("Payment callback:", payment);
+})
         const res = await fetch('/auth/pi', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
