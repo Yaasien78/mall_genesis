@@ -12,17 +12,19 @@
   <script>
   Pi.init({ version: "2.0", sandbox: false });
     
-    document.getElementById("loginBtn").onclick = function() {
-    Pi.authenticate(['username'], function(auth) {}, function(err){})
-.then(function(auth) {
-  return fetch('/api/login', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({
-      accessToken: auth.accessToken,
-      username: auth.user.username,
-      uid: auth.user.uid
+  Pi.authenticate(['username'], function(auth) {}, function(err){ 
+  alert("Pi Login Error: " + JSON.stringify(err)); 
+  document.getElementById("status").innerText = "Error: " + err;
     })
+    .then(function(auth) {
+      return fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          accessToken: auth.accessToken,
+          username: auth.user.username,
+          uid: auth.user.uid
+        })
   });
 })
 .then(res => res.json())
