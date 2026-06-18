@@ -17,6 +17,7 @@ export default function Home() {
       await window.Pi.init({
         version: "2.0",
         sandbox: true
+        appId:"vz83ocyd1n24qre7bhayswur7gop1xzydavhmlvc5cimggyuad0wffenydytchkn"
       })
 
       const scopes = ['username'];
