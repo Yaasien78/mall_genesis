@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/validation-key.txt", "destination": "https://nft-social.vercel.app/validation-key.txt" }
+  ]
+}
