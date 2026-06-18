@@ -1,10 +1,12 @@
-import { useState, useEffect, useRef } from "react";
+"use client";
+
+import { useState, useEffect, useRef, ChangeEvent } from "react";
 import { Sun, Moon, Camera, Trash2, RefreshCw, Save } from "lucide-react";
 
 export default function CoverDepan() {
-  const [darkMode, setDarkMode] = useState(false);
-  const [foto, setFoto] = useState(null);
-  const inputRef = useRef(null);
+  const [darkMode, setDarkMode] = useState<boolean>(false);
+  const [foto, setFoto] = useState<string | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   // Load tema + foto dari localStorage pas awal
   useEffect(() => {
@@ -21,12 +23,12 @@ export default function CoverDepan() {
   }, [darkMode]);
 
   // Handle pilih foto dari kamera/galeri
-  const handleFoto = (e) => {
-    const file = e.target.files[0];
+  const handleFoto = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = (ev) => {
-        setFoto(ev.target.result); // base64 biar bisa masuk localStorage
+        setFoto(ev.target?.result as string); // base64
       };
       reader.readAsDataURL(file);
     }
@@ -44,7 +46,7 @@ export default function CoverDepan() {
   const hapusFoto = () => {
     setFoto(null);
     localStorage.removeItem("userFoto");
-    inputRef.current.value = "";
+    if (inputRef.current) inputRef.current.value = "";
   };
 
   return (
@@ -68,97 +70,44 @@ export default function CoverDepan() {
       {/* Konten Utama */}
       <div className="relative z-10 text-center space-y-6">
 
-        {/* NFT Social - Putih lis emas */}
-        <h1 className={`text-5xl font-bold drop-shadow-[0_0_8px_rgba(255,215,0,0.6)] transition
-          ${darkMode? "text-yellow-100" : "text-white"}`}>
-          NFT Social
-        </h1>
+        <h1 className={`text-5xl font-bold drop-shadow-[0_0_8px_rgba(255,215,0,0.6)] transition ${darkMode? "text-yellow-100" : "text-white"}`}>NFT Social</h1>
 
-        {/* Genesis - Ungu */}
-        <p className={`text-2xl font-semibold drop-shadow-md transition
-          ${darkMode? "text-purple-300" : "text-purple-900"}`}>
-          Genesis
-        </p>
+        <p className={`text-2xl font-semibold drop-shadow-md transition ${darkMode? "text-purple-300" : "text-purple-900"}`}>Genesis</p>
 
-        {/* Kotak Login/Logout */}
-        <button className={`w-64 py-3 font-semibold rounded-xl shadow-lg hover:scale-105 transition
-          ${darkMode? "bg-purple-800/80 text-yellow-200 hover:bg-purple-700" : "bg-white/90 text-purple-700 hover:bg-white"}`}>
-          Login / Logout
-        </button>
+        <button className={`w-64 py-3 font-semibold rounded-xl shadow-lg hover:scale-105 transition ${darkMode? "bg-purple-800/80 text-yellow-200 hover:bg-purple-700" : "bg-white/90 text-purple-700 hover:bg-white"}`}>Login / Logout</button>
 
-        {/* Kotak Mint NFT */}
-        <button className="w-64 py-4 bg-gradient-to-r from-yellow-400 to-yellow-500 text-purple-900 font-bold text-lg rounded-xl shadow-xl hover:scale-105 transition">
-          Mint NFT = 0.01 Pi
-        </button>
+        <button className="w-64 py-4 bg-gradient-to-r from-yellow-400 to-yellow-500 text-purple-900 font-bold text-lg rounded-xl shadow-xl hover:scale-105 transition">Mint NFT = 0.01 Pi</button>
 
-        {/* Lingkaran Upload Foto + Kabut Transparan */}
+        {/* Lingkaran Upload Foto */}
         <div className="flex flex-col items-center gap-2">
-          <input
-            type="file"
-            accept="image/*"
-            capture="user"
-            ref={inputRef}
-            onChange={handleFoto}
-            className="hidden"
-          />
+          <input type="file" accept="image/*" capture="user" ref={inputRef} onChange={handleFoto} className="hidden" />
 
-          <button
-            onClick={() => inputRef.current.click()}
-            className={`w-24 h-24 rounded-full border-4 border-black overflow-hidden backdrop-blur-md transition hover:scale-110
-              ${darkMode? "bg-white/10" : "bg-white/20"}`}
-          >
-            {foto? (
-              <img src={foto} className="w-full h-full object-cover" alt="User foto" />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center">
-                <Camera size={32} className={`${darkMode? "text-gray-300" : "text-black"} opacity-60`} />
-              </div>
-            )}
+          <button onClick={() => inputRef.current?.click()} className={`w-24 h-24 rounded-full border-4 border-black overflow-hidden backdrop-blur-md transition hover:scale-110 ${darkMode? "bg-white/10" : "bg-white/20"}`}>
+            {foto? <img src={foto} className="w-full h-full object-cover" alt="User foto" /> : <div className="w-full h-full flex items-center justify-center"><Camera size={32} className={`${darkMode? "text-gray-300" : "text-black"} opacity-60`} /></div>}
           </button>
 
-          {/* Tombol Hapus Kiri + Ganti Kanan + Simpan */}
+          {/* Tombol Aksi */}
           {foto && (
             <div className="flex gap-3 mt-1 flex-wrap justify-center">
-              <button
-                onClick={hapusFoto}
-                className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold transition
-                  ${darkMode? "bg-red-900/60 text-red-200 hover:bg-red-800" : "bg-red-500/80 text-white hover:bg-red-600"}`}
-              >
+              <button onClick={hapusFoto} className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold transition ${darkMode? "bg-red-900/60 text-red-200 hover:bg-red-800" : "bg-red-500/80 text-white hover:bg-red-600"}`}>
                 <Trash2 size={14}/> Hapus
               </button>
 
-              <button
-                onClick={() => inputRef.current.click()}
-                className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold transition
-                  ${darkMode? "bg-yellow-600/60 text-yellow-100 hover:bg-yellow-500" : "bg-yellow-500 text-purple-900 hover:bg-yellow-400"}`}
-              >
+              <button onClick={() => inputRef.current?.click()} className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold transition ${darkMode? "bg-yellow-600/60 text-yellow-100 hover:bg-yellow-500" : "bg-yellow-500 text-purple-900 hover:bg-yellow-400"}`}>
                 <RefreshCw size={14}/> Ganti
               </button>
 
-              <button
-                onClick={simpanFoto}
-                className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold transition
-                  ${darkMode? "bg-green-800/60 text-green-200 hover:bg-green-700" : "bg-green-500 text-white hover:bg-green-600"}`}
-              >
+              <button onClick={simpanFoto} className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold transition ${darkMode? "bg-green-800/60 text-green-200 hover:bg-green-700" : "bg-green-500 text-white hover:bg-green-600"}`}>
                 <Save size={14}/> Simpan
               </button>
             </div>
           )}
         </div>
 
-        {/* Media Social - Huruf emas */}
-        <p className={`font-semibold tracking-widest mt-8 transition
-          ${darkMode? "text-yellow-400" : "text-yellow-300"}`}>
-          Media Social
-        </p>
+        <p className={`font-semibold tracking-widest mt-8 transition ${darkMode? "text-yellow-400" : "text-yellow-300"}`}>Media Social</p>
 
-        {/* By Yaasien - Putih */}
-        <p className={`text-sm opacity-80 mt-4 transition
-          ${darkMode? "text-gray-300" : "text-white"}`}>
-          By Yaasien
-        </p>
+        <p className={`text-sm opacity-80 mt-4 transition ${darkMode? "text-gray-300" : "text-white"}`}>By Yaasien</p>
       </div>
     </div>
   );
-    }  )
-      }
+}
