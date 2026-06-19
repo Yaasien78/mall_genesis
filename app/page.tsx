@@ -22,13 +22,13 @@ export default function Home() {
       alert("✅ SDK Pi ketemu! App ID: nft-social-testnet")
       window.Pi.init({ 
         version: "2.0", 
-        sandbox: true,
+        sandbox: false,
         appId: "nft-social-testnet"
       })
       clearInterval(checkPi)
     }
     if (tries > 30) {
-      alert("❌ SDK Pi GAGAL ke-load. Cek layout.tsx + refresh Pi Browser")
+      alert("❌ SDK Pi GAGAL ke-load. Ce layout.tsx + refresh Pi Browser")
       clearInterval(checkPi)
     }
   }, 100)
