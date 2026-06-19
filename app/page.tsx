@@ -1,11 +1,10 @@
-"use client";//
+"use client"
+import { useState, useRef, useEffect, ChangeEvent } from "react";
+import { Sun, Moon, Camera, Trash2, RefreshCw, Save } from "lucide-react";
+import Pi from "pi-sdk";
 
-import { useState } from 'react';
-import { Sun, Moon, Camera } from 'lucide-react';
-import { loginpi } from './pi-sdk' ; //
 export default function Home() {
-  const [dark, setDark] = useState(false);
-  //
+  const [darkMode, setDarkMode] = useState(false);
   const [foto, setFoto] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
