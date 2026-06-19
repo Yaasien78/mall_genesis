@@ -49,9 +49,9 @@ const handleLogin = async () => {
     )
     alert("✅ Login berhasil! Halo " + auth.user.username)
     setUser(auth.user)
-  } catch (err) {
-    alert("❌ Login error: " + err)
-  }
+  } catch (err: any) {
+  alert("❌ ERROR DETAIL:\n" + JSON.stringify(err, null, 2))
+}
   setLoading(false)
               }
   }
