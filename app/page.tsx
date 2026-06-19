@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Sun, Moon, Camera } from 'lucide-react';
-
+import { loginpi } from './pi-sdk' ; //
 export default function Home() {
   const [dark, setDark] = useState(false);
   //
@@ -68,6 +68,13 @@ export default function Home() {
         <div className="w-32 h-32 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center shadow-2xl">
   <span className="text-7xl font-bold text-white">π</span>
 </div>
+    {/* Tombol Login Pi */}
+<button 
+  onClick={loginPi}
+  className="mt-8 bg-white text-purple-600 px-8 py-4 rounded-full font-bold text-lg shadow-lg hover:scale-105 transition-transform"
+>
+  Login with Pi
+</button>
       {/* Konten Utama */}
       <div className="relative z-10 text-center space-y-6">
 
