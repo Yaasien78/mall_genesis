@@ -1,3 +1,5 @@
+import './globals.css'
+
 export const metadata = {
   title: 'NFT Social',
   description: 'Pi NFT App',
