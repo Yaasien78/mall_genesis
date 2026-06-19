@@ -16,11 +16,11 @@ export default function Home() {
     const checkPi = setInterval(() => {
       if (window.Pi) {
         setIsPiBrowser(true)
-        // PASTE APP ID LU DI SINI ↓↓
+        // "nft-social-testnet"
         window.Pi.init({ 
           version: "2.0", 
           sandbox: true,
-          appId: "PASTE_APP_ID_LU_DISINI" // ganti ini
+          appId: "nft-social-testnet" //
         })
         clearInterval(checkPi)
       }
