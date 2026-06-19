@@ -35,26 +35,32 @@ export default function Home() {
   return () => clearInterval(checkPi)
 }, [])
 const handleLogin = async () => {
-  if (!isPiBrowser) {
-    alert("❌ Buka app ini di Pi Browser, jangan Chrome!")
+  alert("1. Tombol kepencet ✅") // test tombol
+  
+  if (!window.Pi) {
+    alert("2. ERROR: window.Pi undefined. Refresh Pi Browser!")
     return
   }
-
+  alert("2. window.Pi ada ✅") // test SDK
+  
   setLoading(true)
-  try {
-    alert("⏳ Mencoba login...")
-    const auth = await window.Pi.authenticate(
-      ['username', 'payments'], 
-      (payment) => alert('Ada payment pending: ' + payment.identifier)
-    )
-    alert("✅ Login berhasil! Halo " + auth.user.username)
-    setUser(auth.user)
-  } catch (err: any) {
-  alert("❌ ERROR DETAIL:\n" + JSON.stringify(err, null, 2))
+  
+  // Kasih jeda 500ms biar Pi Browser siap
+  setTimeout(async () => {
+    try {
+      alert("3. Mau panggil authenticate...") // test mau manggil
+      const auth = await window.Pi.authenticate(
+        ['username', 'payments'], 
+        (payment) => alert('Payment: ' + payment.identifier)
+      )
+      alert("4. Sukses! Halo " + auth.user.username)
+      setUser(auth.user)
+    } catch (err: any) {
+      alert("4. ERROR: " + JSON.stringify(err))
+    }
+    setLoading(false)
+  }, 500)
 }
-  setLoading(false)
-              }
-  }
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center p-4">
