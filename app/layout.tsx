@@ -15,12 +15,19 @@ export default function RootLayout({
     <html lang="en">
       <head/>
       <body>{children}</body>
-      
-      {/* Pi SDK taruh paling bawah */}
-      <Script 
-        src="https://sdk.minepi.com/pi-sdk.js" 
-        strategy="afterInteractive" 
-      />
+     {/* Pi SDK taruh paling bawah */}
+<script
+  dangerouslySetInnerHTML={{
+    __html: `
+      window.addEventListener('load', function() {
+        if (window.Pi) {
+          window.Pi.init({ version: "2.0", appId: "nft-social-testnet", sandbox: false });
+        }
+      });
+    `
+  }}
+/>
+<script src="https://sdk.minepi.com/pi-sdk.js"></script>
     </html>
   )
 }
