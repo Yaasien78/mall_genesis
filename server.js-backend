@@ -1,7 +1,7 @@
 import express from 'express'
 import fetch from 'node-fetch'
 import session from 'express-session'
-const cors = require('cors');
+import cors = from 'cors';
 app.use(cors());
 const app = express()
 app.use(express.json())
@@ -21,4 +21,4 @@ app.post('/auth/pi', async (req, res) => {
   res.json({ username: user.username })
 })
 
-app.listen(3000, () => console.log('Server jalan di port 3000'))
+app.listen(process.env.PORT || 3000, () => console.log('Server jalan'))
