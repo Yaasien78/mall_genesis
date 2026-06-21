@@ -1,0 +1,15 @@
+{
+  "name": "nft-social-backend",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "server.js-backend",
+  "scripts": {
+    "start": "node server.js-backend"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "node-fetch": "^3.3.2",
+    "cors": "^2.8.5"
+  }
+}
