@@ -135,13 +135,12 @@ export default function Home() {
               {!profilePic && '📷'}
             </div>
             <input 
-              ref={fileInputRef}
-              type="file" 
-              accept="image/*"
-              capture="environment"
-              onChange={handleFileChange}
-              style={{display: 'none'}}
-            />
+  ref={fileInputRef}
+  type="file"
+  accept="image/*"
+  onChange={handleFileChange}
+  style={{display: 'none'}}
+/>
             <p style={{color: '#888', fontSize: 12, marginTop: -10, marginBottom: 20}}>
               Klik foto buat ganti dari kamera/galeri
             </p>
