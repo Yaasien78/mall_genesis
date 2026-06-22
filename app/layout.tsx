@@ -1,30 +1,27 @@
+'use client'
+import { useEffect } from 'react'
 import './globals.css'
 
-export const metadata = {
-  title: 'Mall Genesis - Marketplace Karya Digital',
-  description: 'Jual beli NFT, ebook, musik pake Pi Coin',
-}
+export default function RootLayout({ children }) {
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.Pi) {
+      window.Pi.init({ version: "2.0", sandbox: true })
+      console.log("Pi SDK initialized")
+    }
+  }, [])
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
   return (
     <html lang="id">
-      <body className="min-h-screen flex-col">
-        <main className="flex-1">
-          {children}
-        </main>
-        
+      <body className="min-h-screen flex flex-col">
+        <main className="flex-1">{children}</main>
         <footer className="border-t mt-20 py-8 text-center text-sm text-gray-500">
           <div className="space-x-6 mb-2">
-            <a href="/privacy" className="hover:underline hover:text-black">Privacy Policy</a>
-            <a href="/terms" className="hover:underline hover:text-black">Terms of Service</a>
+            <a href="/privacy" className="hover:underline">Privacy Policy</a>
+            <a href="/terms" className="hover:underline">Terms of Service</a>
           </div>
-          <p>© 2026 Mall Genesis. Dibuat pake Pi SDK</p>
+          <p>© 2026 Mall Genesis</p>
         </footer>
       </body>
     </html>
   )
-  }
+      }
