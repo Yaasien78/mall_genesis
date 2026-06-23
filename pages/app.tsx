@@ -1,101 +1,59 @@
-import dynamic from 'next/dynamic'
-import { useEffect, useState } from 'react'
+const [user, setUser] = useState(null);
 
-declare global {
-  interface Window {
-    Pi: any;
+useEffect(() => {
+  if (typeof window !== 'undefined' && window.Pi) {
+    window.Pi.init({ version: "2.0", sandbox: true });
   }
-}
+}, []);
 
-const AppPage = () => {
-  const [isLoading, setIsLoading] = useState(false);
+const handleBuy = async () => {
+  if (!window.Pi) {
+    alert("Pi SDK belum ke-load");
+    return;
+  }
 
-  useEffect(() => {
-    if (typeof window === 'undefined' || !window.Pi) return;
-    window.Pi.onIncompletePaymentFound(async (payment: any) => {
-      await fetch('/api/payments/complete', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          paymentId: payment.identifier, 
-          txid: payment.transaction?.txid 
-        })
-      });
+  try {
+    // 1. Login dulu wajib
+    const auth = await window.Pi.authenticate(['username', 'payments'], (payment) => {
+      console.log('Payment callback:', payment);
     });
-  }, []);
-
-  const handleBuy = async () => {
-    if (typeof window === 'undefined') return;
-    if (!window.Pi) {
-      alert('Buka di Pi Browser ya bang! Chrome gak bisa');
-      return;
-    }
+    setUser(auth.user);
     
-    setIsLoading(true);
-    
+    // 2. Baru bikin payment
     const paymentData = {
       amount: 0.01,
-      memo: "Mint NFT Mall Genesis",
-      metadata: { product: "nft_mint", price: 0.01 }
+      memo: "Mint NFT Mall Genesis #001",
+      metadata: { nftId: "001" }
     };
 
-    const callbacks = {
-      onReadyForServerApproval: async (paymentId: string) => {
-        await fetch('/api/payments/approve', {
+    window.Pi.createPayment(paymentData, {
+      onReadyForServerApproval: (paymentId) => {
+        // Backend approve
+        fetch('/api/payments/approve', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ paymentId })
         });
       },
-      onReadyForServerCompletion: async (paymentId: string, txid: string) => {
-        await fetch('/api/payments/complete', {
-          method: 'POST',
+      onReadyForServerCompletion: (paymentId, txid) => {
+        // Backend complete + mint NFT
+        fetch('/api/payments/complete', {
+          method: 'POST', 
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ paymentId, txid })
         });
-        alert("NFT berhasil di-mint! 🔥");
-        setIsLoading(false);
+        alert("Pembayaran sukses! NFT lu lagi di-mint 🔥");
       },
-      onCancel: () => setIsLoading(false),
-      onError: (error: Error) => {
-        alert("Error: " + error.message);
-        setIsLoading(false);
-      }
-    };
+      onCancel: () => alert("Batal bayar"),
+      onError: (err) => alert("Error: " + err)
+    });
 
-    window.Pi.createPayment(paymentData, callbacks);
-  };
+  } catch (err) {
+    alert("Auth gagal: " + err);
+  }
+};
 
-  return (
-    <div style={{
-      minHeight: '100vh',
-      background: 'linear-gradient(135deg, #6a0daf 0%, #4a1a2e 50%, #1b1b3b 100%)',
-      color: 'white',
-      fontFamily: 'Segoe UI, Arial, sans-serif',
-      padding: '40px 20px',
-      textAlign: 'center'
-    }}>
-      <h1 style={{ fontSize: '32px', marginBottom: '20px' }}>Mall Genesis NFT</h1>
-      <p style={{ marginBottom: '40px' }}>Mint NFT kamu dengan 0.01 Pi</p>
-      
-      <button
-        onClick={handleBuy}
-        disabled={isLoading}
-        style={{
-          background: isLoading ? '#666' : 'linear-gradient(90deg, #ff6b6b, #ff8e3c)',
-          border: 'none',
-          borderRadius: '12px',
-          padding: '16px 32px',
-          fontSize: '18px',
-          fontWeight: 'bold',
-          color: 'white',
-          cursor: isLoading ? 'not-allowed' : 'pointer'
-        }}
-      >
-        {isLoading ? 'Loading...' : 'Buy with Pi 0.01'}
-      </button>
-    </div>
-  );
-}
-
-export default dynamic(() => Promise.resolve(AppPage), { ssr: false })
+// Di JSX tombolnya:
+<button onClick={handleBuy} className="...">
+  Buy with Pi 0.01
+</button>
