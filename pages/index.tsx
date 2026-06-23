@@ -92,7 +92,7 @@ export default function Home() {
           <>
             <div style={{fontSize: 80, marginBottom: 20}}>🎨</div>
             <p style={{color: '#bbb', marginBottom: 40}}>
-              Buka dari Pi Browser ya bang. Kalo di Chrome bakal disuruh download.
+              Buka dari Pi Browser, Kalo di Chrome silahkan download.
             </p>
             <button 
               onClick={handleLogin} 
