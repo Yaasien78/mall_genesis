@@ -15,7 +15,7 @@ export default function Home() {
     script.src = 'https://sdk.minepi.com/pi-sdk.js';
     script.onload = () => {
       setSdkLoaded(true);
-      window.Pi.init({ version: "2.0", sandbox: false }); // sandbox: true kalo testnet
+      window.Pi.init({ version: "2.0", sandbox: true }); // sandbox: true kalo testnet
     };
     document.body.appendChild(script);
   }, []);
