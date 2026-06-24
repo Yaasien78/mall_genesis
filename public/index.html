@@ -3,98 +3,238 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mall Genesis - Marketplace NFT Pi Network</title>
+  <title>Mall Genesis</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
-      text-align: center;
-      padding: 40px 20px;
       min-height: 100vh;
     }
-    .container {
-      max-width: 400px;
-      margin: 0 auto;
-    }
+    .page { display: none; padding: 40px 20px; min-height: 100vh; }
+    .page.active { display: block; }
+    .container { max-width: 500px; margin: 0 auto; text-align: center; }
+    
     h1 { 
       font-size: 2.8rem;
-      margin-bottom: 8px;
-      background: linear-gradient(90deg, #ffd700, #ffed4e, #ffd700);
+      margin-bottom: 10px;
+      background: linear-gradient(90deg, #ffd700, #ffed4e);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       font-weight: 800;
-      letter-spacing: 1px;
     }
     .subtitle { 
       font-size: 15px; 
-      opacity: 0.85;
-      margin-bottom: 35px;
-      line-height: 1.5;
+      opacity: 0.9;
+      margin-bottom: 30px;
     }
-    .profile {
-      width: 110px;
-      height: 110px;
-      border-radius: 50%;
-      border: 4px solid #ffd700;
-      margin: 25px auto;
+    
+    /* HALAMAN LOGIN - FOTO 4x6 CM */
+    .login-box {
       background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 40px 30px;
+      margin-top: 40px;
+    }
+    
+    .profile-4x6 {
+      width: 151px; /* 4 cm */
+      height: 227px; /* 6 cm */
+      border-radius: 12px; /* sudut agak rounded */
+      border: 3px solid #ffd700;
+      margin: 0 auto 25px;
+      background: rgba(255,255,255,0.15);
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      font-size: 45px;
+      font-size: 50px;
       backdrop-filter: blur(10px);
       transition: 0.3s;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+      overflow: hidden;
     }
-    .profile:hover {
-      transform: scale(1.05);
+    .profile-4x6:hover {
+      transform: scale(1.03);
+      box-shadow: 0 12px 35px rgba(255,215,0,0.4);
     }
-    .user-id {
-      font-size: 13px;
-      opacity: 0.7;
-      margin-bottom: 35px;
-      font-family: monospace;
+    .profile-hint {
+      font-size: 12px;
+      color: #ddd;
+      margin-bottom: 25px;
     }
+    
     button {
       width: 100%;
       padding: 16px;
-      margin: 12px 0;
       border: none;
       border-radius: 14px;
       font-size: 16px;
       font-weight: 700;
       cursor: pointer;
       transition: 0.3s;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    }
-    #loginBtn {
       background: linear-gradient(90deg, #ffd700, #ffed4e);
       color: #1a1a2e;
+      margin-top: 10px;
     }
-    #buyBtn {
+    button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
+    
+    /* HALAMAN GALERI - tetap lingkaran */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+    .user-info {
+      font-size: 13px;
+      opacity: 0.8;
+    }
+    .logout-btn {
+      padding: 8px 14px;
+      font-size: 12px;
+      width: auto;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      margin: 0;
+    }
+    
+    .mint-box {
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(10px);
+      border-radius: 18px;
+      padding: 25px;
+      margin-bottom: 30px;
+      border: 2px solid rgba(255,215,0,0.3);
+    }
+    .mint-box h3 { margin-bottom: 12px; font-size: 1.2rem; }
+    .mint-box p { font-size: 14px; opacity: 0.8; margin-bottom: 15px; }
+    .mint-btn {
       background: linear-gradient(90deg, #4CAF50, #66bb6a);
       color: white;
-      display: none;
+      font-size: 15px;
     }
-    button:hover { 
-      opacity: 0.9; 
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    
+    .gallery-title {
+      text-align: left;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 15px;
     }
-    #status {
-      margin-top: 25px;
-      font-size: 14px;
-      min-height: 22px;
-      opacity: 0.9;
-      padding: 10px;
-      border-radius: 8px;
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    .nft-card {
       background: rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 10px;
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    
+    #status, #mintStatus {
+      margin-top: 15px;
+      font-size: 13px;
+      opacity: 0.8;
+      min-height: 20px;
     }
   </style>
 </head>
+<body>
+  <!-- HALAMAN 1: LOGIN - FOTO 4x6 -->
+  <div class="page active" id="pageLogin">
+    <div class="container">
+      <div class="login-box">
+        <h1>🏛️ Mall Genesis</h1>
+        <p class="subtitle">Marketplace NFT premium di Pi Network</p>
+        
+        <!-- FOTO 4x6 CM -->
+        <div class="profile-4x6" onclick="gantiFoto()">
+          📷
+        </div>
+        <p class="profile-hint">Klik foto buat ganti dari kamera/galeri</p>
+        
+        <button onclick="login()">Login dulu</button>
+        <div id="status">Status: Belum login</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HALAMAN 2: GALERI NFT - FOTO USER TETAP LINGKARAN -->
+  <div class="page" id="pageGallery">
+    <div class="container">
+      <div class="header">
+        <div class="user-info" id="userInfo">Loading...</div>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+      </div>
+      
+      <div class="mint-box">
+        <h3>🎨 Mint NFT Genesis #001</h3>
+        <p>NFT edisi perdana Mall Genesis. Limited 100 item</p>
+        <button class="mint-btn" onclick="buyNFT()">Mint NFT - Bayar 0.01 Pi</button>
+        <div id="mintStatus"></div>
+      </div>
+      
+      <h3 class="gallery-title">Galeri NFT Kamu</h3>
+      <div class="gallery" id="galleryGrid">
+        <div class="nft-card">🎭</div>
+        <div class="nft-card">🖼️</div>
+        <div class="nft-card">💎</div>
+        <div class="nft-card">🔮</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+  <script>
+    Pi.init({ version: "2.0", sandbox: true, appid: "mall-genesis-4cqg" });
+    let currentUser = null;
+
+    function showPage(pageId) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(pageId).classList.add('active');
+    }
+
+    async function login() {
+      document.getElementById('status').innerText = 'Status: Loading...';
+      try {
+        await Pi.authenticate(['username', 'payments'], onIncompletePaymentFound);
+        currentUser = await Pi.getCurrentUser();
+        
+        document.getElementById('userInfo').innerText = currentUser.username + ' | ID: ' + currentUser.uid.substring(0,8);
+        showPage('pageGallery');
+        loadGallery();
+      } catch (err) {
+        document.getElementById('status').innerText = 'Status: Login gagal';
+        console.error(err);
+      }
+    }
+
+    function logout() {
+      currentUser = null;
+      showPage('pageLogin');
+      document.getElementById('status').innerText = 'Status: Logout berhasil';
+    }
+
+    function buyNFT() {
+      document.getElementById('mintStatus').innerText = 'Status: Proses pembayaran...';
+      Pi.createPayment({
+        amount: 0.01,
+        memo: "Mint NFT Mall Genesis #001",
+        metadata: { item: "NFT Genesis #001", user: currentUser.username }
+      }, {
+        onReadyForServerApproval: (paymentId) => {
+          document.getElementById('mintStatus').innerText = 'Status: Approval server...';
+        },
+        onReadyForServerCompletion: (paymentId, txid) => {
+          document.getElementById('mintStatus').innerText = 'Status: Mint berhasil! 🎉';
+          alert('NFT Genesis #001 berhasil!\nTX: ' + txid.substring(0,12));
+          addNFTtoGallery('🏛️');
