@@ -9,45 +9,51 @@
   *{box-sizing:border-box}
   html,body{margin:0;padding:0;width:100%;min-height:100vh;color:#fff;font-family:Arial;overflow-x:hidden;background:#000814}
 
-  /* BACKGROUND LANGIT GELAP BINTANG */
+  /* BACKGROUND LANGIT GELAP BINTANG JELAS */
   body::before{
     content:"";position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;
     background:#000814;
     background-image:
-      radial-gradient(2px 2px at 50px 100px, #fff, transparent),
-      radial-gradient(2px 2px at 120px 200px, #fff, transparent),
-      radial-gradient(1px 1px at 200px 80px, #fff, transparent),
-      radial-gradient(1px 1px at 80px 250px, #fff, transparent),
-      radial-gradient(2px 2px at 180px 300px, #fff, transparent),
-      radial-gradient(1px 1px at 40px 350px, #fff, transparent),
-      radial-gradient(1px 1px at 220px 400px, #fff, transparent),
-      radial-gradient(2px 2px at 100px 450px, #fff, transparent),
-      radial-gradient(1px 1px at 160px 500px, #fff, transparent);
-    background-repeat:repeat;background-size:250px 550px;opacity:0.9
+      radial-gradient(1px 1px at 30px 60px, #fff, transparent),
+      radial-gradient(2px 2px at 90px 140px, #fff, transparent),
+      radial-gradient(1px 1px at 160px 90px, #fff, transparent),
+      radial-gradient(1px 1px at 70px 220px, #fff, transparent),
+      radial-gradient(2px 2px at 180px 280px, #fff, transparent),
+      radial-gradient(1px 1px at 40px 340px, #fff, transparent),
+      radial-gradient(1px 1px at 200px 380px, #fff, transparent),
+      radial-gradient(2px 2px at 110px 450px, #fff, transparent);
+    background-repeat:repeat;background-size:220px 500px;opacity:1
   }
 
-  /* KONTEN DARI ATAS BIAR GAK KEPOTONG */
+  /* KONTEN DARI ATAS */
 .container{position:relative;z-index:1;width:100%;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:60px 20px 40px;text-align:center;gap:20px}
 
-  h1{font-size:48px;margin:0;line-height:1.1;font-weight:900;color:#FFD700;text-shadow:0 0 25px rgba(255,215,0,0.9)}
-.sub{color:#FFD700;font-size:14px;margin:0;font-weight:600}
+  /* TEKS GRADIENT EMAS KE SILVER + OUTLINE HITAM BIAR JELAS */
+  h1{
+    font-size:48px;margin:0;line-height:1.1;font-weight:900;
+    background:linear-gradient(180deg,#FFD700 0%,#FFF 40%,#C0C0C0 100%);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    filter:drop-shadow(0 0 2px #000) drop-shadow(0 0 4px rgba(0,0,0,0.8))
+  }
+.sub{
+    color:#FFD700;font-size:14px;margin:0;font-weight:600;
+    text-shadow:0 1px 3px rgba(0,0,0,0.9), 0 0 1px #000
+  }
 
-  /* KOTAK FOTO 4x6cm */
+  /* KOTAK FOTO 4x6cm GARIS PUTUS */
 .foto{
     width:4cm;height:6cm;border:3px dashed #FFD700;border-radius:12px;
-    background:rgba(0,0,0,0.4);position:relative;cursor:pointer;overflow:hidden;
-    display:flex;align-items:center;justify-content:center;flex-shrink:0;
-    box-shadow:0 0 20px rgba(255,215,0,0.4)
+    background:rgba(0,0,0,0.3);position:relative;cursor:pointer;overflow:hidden;
+    display:flex;align-items:center;justify-content:center;flex-shrink:0
   }
 .foto img{width:100%;height:100%;object-fit:cover;display:none}
-.foto span{color:#FFD700;font-size:12px;text-align:center;line-height:1.4;font-weight:600}
+.foto span{color:#FFD700;font-size:12px;text-align:center;line-height:1.4;font-weight:600;text-shadow:0 1px 2px #000}
 .foto input{position:absolute;width:100%;height:100%;top:0;left:0;opacity:0;cursor:pointer}
 
-  /* TOMBOL MASUK */
+  /* TOMBOL MASUK KUNING SOLID */
 .btn{
     width:100%;max-width:280px;padding:16px;border:none;border-radius:12px;
-    background:#FFD700;color:#000;font-weight:900;font-size:16px;cursor:pointer;
-    box-shadow:0 0 25px rgba(255,215,0,0.7)
+    background:#FFD700;color:#000;font-weight:900;font-size:16px;cursor:pointer
   }
 .btn:active{transform:scale(0.97)}
 .btn:disabled{opacity:0.6}
@@ -64,45 +70,4 @@
       <input type="file" id="file" accept="image/*" capture="environment">
     </label>
 
-    <button class="btn" onclick="masuk()">Masuk</button>
-  </div>
-
-<script>
-  let fotoSimpan = localStorage.getItem('fotoMG');
-  if(fotoSimpan){
-    document.getElementById('img').src = fotoSimpan;
-    document.getElementById('img').style.display = 'block';
-    document.querySelector('.foto span').style.display = 'none';
-  }
-
-  document.getElementById('file').onchange = e => {
-    let f = e.target.files[0];
-    if(f){
-      let r = new FileReader();
-      r.onload = ev => {
-        localStorage.setItem('fotoMG', ev.target.result);
-        document.getElementById('img').src = ev.target.result;
-        document.getElementById('img').style.display = 'block';
-        document.querySelector('.foto span').style.display = 'none';
-      }
-      r.readAsDataURL(f);
-    }
-  };
-
-  async function masuk(){
-    let btn = document.querySelector('.btn');
-    btn.textContent = 'Login...';
-    btn.disabled = true;
-    try{
-      Pi.init({version:"2.0", sandbox:false});
-      let auth = await Pi.authenticate(['username'], () => {});
-      window.location.href = '/dashboard.html?user=' + auth.user.username;
-    }catch(err){
-      alert('Buka dari Pi Browser ya bang');
-      btn.textContent = 'Masuk';
-      btn.disabled = false;
-    }
-  }
-</script>
-</body>
- </html>
+    <button class="btn" onclick="masuk()">Masuk</
