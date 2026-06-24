@@ -42,4 +42,87 @@
 .foto-btn img{position:absolute;width:100%;height:100%;object-fit:cover;top:0;left:0;display:none;z-index:1}
   #file{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer;z-index:2}
 
-.login{background:rgba(255,255,255,0.04);border:1px solid rgba(255,
+.login{background:rgba(255,255,255,0.04);border:1px solid rgba(255,215,0,0.3);border-radius:9px;padding:9px}
+.login p{font-size:10.5px;color:#bbb;margin-bottom:3px}
+  #user{width:100%;padding:7px;border:1px solid rgba(255,215,0,0.3);border-radius:5px;
+    background:#000;color:#FFD700;text-align:center;font-size:11.5px;font-weight:700}
+.btn{width:100%;padding:9px;margin-top:5px;border:none;border-radius:6px;
+    background:linear-gradient(90deg,#FFD700,#C0C0C0);color:#000;font-weight:800;font-size:12.5px;cursor:pointer}
+.btn:active{transform:scale(0.97)}
+</style>
+</head>
+<body>
+  <div id="stars"></div>
+
+  <div class="box">
+    <!-- Mall di atas, Genesis di bawah -->
+    <div class="title">
+      <h1>Mall</h1>
+      <h1>Genesis</h1>
+    </div>
+    <p class="sub">Marketplace dan Galeri NFT</p>
+
+    <!-- Kotak foto 4x6cm -->
+    <div class="foto-wrap">
+      <button class="foto-btn" type="button">
+        <img id="img">
+        <span id="txt">📷 Klik untuk<br>Kamera/Galeri</span>
+        <input type="file" id="file" accept="image/*">
+      </button>
+    </div>
+
+    <div class="login">
+      <p>Username Pi</p>
+      <input id="user" readonly value="Klik Masuk">
+      <button class="btn" onclick="loginDanMasuk()">Masuk</button>
+    </div>
+  </div>
+
+<script>
+  // Bintang 45 biji biar ringan
+  for(let i=0;i<45;i++){
+    let d=document.createElement('div');
+    d.className='star';
+    d.style.left=Math.random()*100+'%';
+    d.style.top=Math.random()*100+'%';
+    d.style.animationDelay=Math.random()*4+'s';
+    document.getElementById('stars').appendChild(d);
+  }
+
+  // Foto aktif 100%
+  document.getElementById('file').onchange = e => {
+    let f = e.target.files[0];
+    if(f && f.type.startsWith('image/')){
+      let r = new FileReader();
+      r.onload = ev => {
+        document.getElementById('img').src = ev.target.result;
+        document.getElementById('img').style.display = 'block';
+        document.getElementById('txt').style.display = 'none';
+      }
+      r.readAsDataURL(f);
+    }
+  }
+
+  // 1 klik = login Pi + isi username + redirect
+  async function loginDanMasuk(){
+    let btn = document.querySelector('.btn');
+    btn.disabled = true;
+    btn.textContent = 'Login Pi...';
+
+    try{
+      Pi.init({version:"2.0", sandbox:true});
+      let auth = await Pi.authenticate(['username'], ()=>{});
+      document.getElementById('user').value = '@' + auth.user.username;
+      btn.textContent = 'Masuk...';
+      setTimeout(()=>{
+        window.location.href = `/dashboard.html?user=${auth.user.username}`;
+      }, 400);
+    }catch(err){
+      alert('Buka dari Pi Browser ya bang\nError: ' + err.message);
+      btn.disabled = false;
+      btn.textContent = 'Masuk';
+    }
+  }
+</script>
+</body>
+</html>
