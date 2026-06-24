@@ -2,29 +2,33 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Mall Genesis</title>
 <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 <style>
   body{margin:0;padding:10px;background:#000814;color:#fff;font-family:Arial;text-align:center;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center}
-  h1{font-size:44px;margin:0;line-height:1;background:linear-gradient(270deg,#C0C0C0,#FFD700,#FFF,#FFD700,#C0C0C0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-size:300% 100%;animation:slide 3s infinite}
-  @keyframes slide{0%{background-position:300% 0}100%{background-position:-300% 0}}
- .sub{color:#FFD700;font-size:13px;margin:5px 0 15px}
 
-  /* Kotak foto 4x6cm - LABEL + input full, tanpa z-index */
+  /* Mall Genesis GEDE */
+  h1{font-size:46px;margin:0;line-height:1.05;background:linear-gradient(270deg,#C0C0C0,#FFD700,#FFF,#FFD700,#C0C0C0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-size:300% 100%;animation:slide 3s infinite;text-shadow:0 0 30px rgba(255,215,0,0.7)}
+  @keyframes slide{0%{background-position:300% 0}100%{background-position:-300% 0}}
+.sub{color:#FFD700;font-size:14px;margin:8px 0 18px;font-weight:600}
+
+  /* Kotak foto 4x6cm */
 .foto{
     width:4cm;height:6cm;border:2px dashed #FFD700;border-radius:8px;
-    background:#0a0a0a;position:relative;cursor:pointer;overflow:hidden;margin-bottom:12px
+    background:#0a0a0a;position:relative;cursor:pointer;overflow:hidden;margin-bottom:20px
   }
 .foto img{width:100%;height:100%;object-fit:cover;display:none}
-.foto span{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#FFD700;font-size:11px}
+.foto span{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#FFD700;font-size:11px;line-height:1.4}
 .foto input{position:absolute;width:100%;height:100%;top:0;left:0;opacity:0;cursor:pointer}
 
-  /* Login pendek sempit */
-.login{width:230px;background:#0a0a0a;border:1px solid #FFD700;border-radius:8px;padding:8px}
-.login p{font-size:10px;color:#ccc;margin:0 0 4px}
-  #user{width:100%;padding:7px;border:1px solid #FFD700;border-radius:5px;background:#000;color:#FFD700;text-align:center;font-size:12px;font-weight:700}
-.btn{width:100%;padding:9px;margin-top:5px;border:none;border-radius:6px;background:#FFD700;color:#000;font-weight:bold;font-size:12px;cursor:pointer}
+  /* Tombol Masuk 1 biji doang, kotak kuning */
+.btn{
+    width:200px;padding:14px;border:none;border-radius:8px;
+    background:#FFD700;color:#000;font-weight:900;font-size:15px;cursor:pointer;
+    box-shadow:0 0 20px rgba(255,215,0,0.5)
+  }
+.btn:active{transform:scale(0.95)}
 </style>
 </head>
 <body>
@@ -32,24 +36,18 @@
   <h1>Genesis</h1>
   <div class="sub">Marketplace dan Galeri NFT</div>
 
-  <!-- KOTAK FOTO: label bungkus input, klik mana aja aktif -->
+  <!-- KOTAK FOTO 4x6cm -->
   <label class="foto">
     <img id="img">
     <span>📷 Klik untuk<br>Kamera/Galeri</span>
     <input type="file" id="file" accept="image/*">
   </label>
 
-  <!-- LOGIN: 1 klik = auth + isi + redirect -->
-  <div class="login">
-    <p>Username Pi</p>
-    <input id="user" readonly value="Klik Masuk dulu">
-    <button class="btn" onclick="loginDanGas()">Masuk</button>
-  </div>
+  <!-- TOMBOL MASUK 1 BIJI DOANG -->
+  <button class="btn" onclick="masuk()">Masuk</button>
 
 <script>
-  let userPi = null;
-
-  // FOTO AKTIF 100%
+  // FOTO AKTIF
   document.getElementById('file').onchange = e => {
     let f = e.target.files[0];
     if(f){
@@ -59,29 +57,23 @@
     }
   };
 
-  // 1 KLIK = LOGIN PI + AUTO REDIRECT
-  async function loginDanGas(){
+  // KLIK MASUK = LOGIN PI + LANGSUNG KE BERANDA
+  async function masuk(){
     let btn = document.querySelector('.btn');
+    btn.textContent = 'Login...';
     btn.disabled = true;
-    btn.textContent = 'Login Pi...';
 
     try{
-      Pi.init({version:"2.0", sandbox:false}); // UDAH PUBLISH = FALSE
+      Pi.init({version:"2.0", sandbox:false}); // UDAH PUBLISH
       let auth = await Pi.authenticate(['username'], () => {});
 
-      userPi = auth.user.username;
-      document.getElementById('user').value = '@' + userPi;
-      btn.textContent = 'Masuk Dashboard...';
-
-      // Auto redirect 0.3 detik
-      setTimeout(() => {
-        window.location.href = '/dashboard.html?user=' + userPi;
-      }, 300);
+      // Langsung redirect ke beranda/dashboard
+      window.location.href = '/dashboard.html?user=' + auth.user.username;
 
     }catch(err){
-      alert('Login gagal: ' + err.message + '\n\nPastikan buka dari Pi Browser app resmi');
-      btn.disabled = false;
+      alert('Gagal login. Buka dari Pi Browser ya bang\n' + err.message);
       btn.textContent = 'Masuk';
+      btn.disabled = false;
     }
   }
 </script>
