@@ -57,25 +57,29 @@ setTimeout(function(){
   }
 }, 100);
 
-// Tombol masuk
-document.getElementById('btnMasuk').onclick = function(){
+// Tombol masuk - VERSI FIX
+document.getElementById('btnMasuk').onclick = async function(){
   let b = this;
   b.textContent = 'Login...';
   b.disabled = true;
 
-  setTimeout(function(){
-    try{
-      Pi.init({version:"2.0", sandbox:false});
-      Pi.authenticate(['username'], function(){}, function(payment){
-        localStorage.setItem('pi_username', payment.user.username);
-        window.location = '/dashboard.html?user=' + payment.user.username;
-      });
-    }catch(e){
-      alert('Buka dari Pi Browser ya bang');
-      b.textContent = 'Masuk';
-      b.disabled = false;
-    }
-  }, 100);
+  try{
+    Pi.init({version:"2.0", sandbox:false});
+
+    // Pake async/await biar dapet username
+    const scopes = ['username', 'payments'];
+    const auth = await Pi.authenticate(scopes, function(payment){});
+
+    localStorage.setItem('pi_username', auth.user.username);
+
+    // Pindah ke dashboard bawa username
+    window.location.href = '/dashboard.html?user=' + auth.user.username;
+
+  }catch(e){
+    alert('Gagal login: ' + e.message + '\nPastikan buka dari Pi Browser');
+    b.textContent = 'Masuk';
+    b.disabled = false;
+  }
 };
 </script>
 </body>
