@@ -6,118 +6,33 @@
 <title>Mall Genesis</title>
 <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 <style>
+  *{box-sizing:border-box}
   body{
-    margin:0;padding:10px;background:#000814;color:#fff;font-family:Arial;
-    text-align:center;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
-    background-size:cover;background-position:center;background-attachment:fixed;
+    margin:0;padding:20px;color:#fff;font-family:Arial;text-align:center;min-height:100vh;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    /* BACKGROUND LANGIT HITAM BIRU BERBINTANG */
+    background:#000814;
+    background-image:
+      radial-gradient(white 1px, transparent 0),
+      radial-gradient(white 1px, transparent 0);
+    background-size: 50px 50px, 100px 100px;
+    background-position: 0 0, 40px 60px;
   }
 
-  /* KOTAK HITAM LIST TIPIS */
-.wrap{
-    position:relative;z-index:2;background:rgba(0,0,0,0.25);
-    backdrop-filter:blur(6px);border:1px solid rgba(255,215,0,0.3);
-    border-radius:14px;padding:18px;max-width:280px;margin:auto
+  /* KOTAK HITAM LIST TIPIS 25% */
+ .wrap{
+    width:100%;max-width:320px;background:rgba(0,0,0,0.25);
+    backdrop-filter:blur(6px);border:1px solid rgba(255,215,0,0.4);
+    border-radius:16px;padding:25px 20px;display:flex;flex-direction:column;align-items:center;gap:15px;
+    box-shadow:0 8px 32px rgba(0,0,0,0.6)
   }
 
-  /* MALL GENESIS GEDE */
-  h1{font-size:46px;margin:0;line-height:1.05;background:linear-gradient(270deg,#C0C0C0,#FFD700,#FFF,#FFD700,#C0C0C0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-size:300% 100%;animation:slide 3s infinite;text-shadow:0 0 20px rgba(255,215,0,0.5)}
+  /* MALL GENESIS */
+  h1{font-size:42px;margin:0;line-height:1.1;background:linear-gradient(270deg,#C0C0C0,#FFD700,#FFF,#FFD700,#C0C0C0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-size:300% 100%;animation:slide 3s infinite}
   @keyframes slide{0%{background-position:300% 0}100%{background-position:-300% 0}}
-.sub{color:#FFD700;font-size:14px;margin:8px 0 18px;font-weight:600}
+ .sub{color:#FFD700;font-size:13px;margin:0 0 5px;font-weight:600}
 
   /* KOTAK FOTO 4x6cm */
-.foto{
-    width:4cm;height:6cm;border:2px dashed #FFD700;border-radius:8px;
-    background:rgba(0,0,0,0.4);position:relative;cursor:pointer;overflow:hidden;margin-bottom:15px
-  }
-.foto img{width:100%;height:100%;object-fit:cover;display:none}
-.foto span{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#FFD700;font-size:11px;line-height:1.4}
-.foto input{position:absolute;width:100%;height:100%;top:0;left:0;opacity:0;cursor:pointer}
-
-  /* TOMBOL MASUK KUNING */
-.btn{width:200px;padding:14px;border:none;border-radius:8px;background:#FFD700;color:#000;font-weight:900;font-size:15px;cursor:pointer;margin-bottom:8px;box-shadow:0 0 15px rgba(255,215,0,0.4)}
-.btn:active{transform:scale(0.95)}
-.btn:disabled{opacity:0.6}
-
-  /* TOMBOL MENU WALLPAPER */
-.btn2{width:200px;padding:10px;border:1px solid #FFD700;border-radius:8px;background:rgba(0,0,0,0.4);color:#FFD700;font-weight:700;font-size:13px;cursor:pointer}
-.btn2:active{transform:scale(0.95)}
-
-  /* INPUT WALLPAPER DISEMBUNYIIN */
-#wpFile{display:none}
-</style>
-</head>
-<body id="bg">
-  <div class="wrap">
-    <h1>Mall</h1>
-    <h1>Genesis</h1>
-    <div class="sub">Marketplace dan Galeri NFT</div>
-
-    <!-- KOTAK FOTO 4x6cm buat upload NFT/profil -->
-    <label class="foto">
-      <img id="img">
-      <span>📷 Klik untuk<br>Kamera/Galeri</span>
-      <input type="file" id="file" accept="image/*" capture="environment">
-    </label>
-
-    <!-- TOMBOL MASUK 1 BIJI -->
-    <button class="btn" onclick="masuk()">Masuk</button>
-
-    <!-- MENU WALLPAPER -->
-    <button class="btn2" onclick="document.getElementById('wpFile').click()">🎨 Ganti Wallpaper</button>
-    <input type="file" id="wpFile" accept="image/*">
-  </div>
-
-<script>
-  // FOTO KOTAK 4x6cm - KAMERA/GALERI AKTIF
-  document.getElementById('file').onchange = e => {
-    let f = e.target.files[0];
-    if(f){
-      let r = new FileReader();
-      r.onload = ev => {
-        document.getElementById('img').src = ev.target.result;
-        document.getElementById('img').style.display = 'block';
-        document.querySelector('.foto span').style.display = 'none';
-      }
-      r.readAsDataURL(f);
-    }
-  };
-
-  // WALLPAPER BACKGROUND - SIMPAN PERMANEN
-  document.getElementById('wpFile').onchange = e => {
-    let f = e.target.files[0];
-    if(f){
-      let r = new FileReader();
-      r.onload = ev => {
-        localStorage.setItem('wpMG', ev.target.result);
-        document.getElementById('bg').style.backgroundImage = `url(${ev.target.result})`;
-      }
-      r.readAsDataURL(f);
-    }
-  };
-
-  // LOAD WALLPAPER PAS BUKA APP
-  let wp = localStorage.getItem('wpMG');
-  if(wp) document.getElementById('bg').style.backgroundImage = `url(${wp})`;
-
-  // KLIK MASUK = LOGIN PI + LANGSUNG KE VIEW 2
-  async function masuk(){
-    let btn = document.querySelector('.btn');
-    btn.textContent = 'Login...';
-    btn.disabled = true;
-
-    try{
-      Pi.init({version:"2.0", sandbox:false}); // UDAH PUBLISH
-      let auth = await Pi.authenticate(['username'], () => {});
-
-      // Redirect ke View 2 dashboard.html
-      window.location.href = '/dashboard.html?user=' + auth.user.username;
-
-    }catch(err){
-      alert('Gagal login. Buka dari Pi Browser ya bang');
-      btn.textContent = 'Masuk';
-      btn.disabled = false;
-    }
-  }
-</script>
-</body>
-</html>
+ .foto{
+    width:4cm;height:6cm;border:2px dashed #FFD700;border-radius:10px;
+    background:rgba(0,0,0,0.35);position:relative;cursor:pointer
