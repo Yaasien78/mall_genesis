@@ -76,38 +76,25 @@ document.getElementById('btnMasuk').onclick = async function(){
 /* 1. Terowongan Galaksi Spiral Ungu */
 .warp{
   position:fixed;top:0;left:0;width:100%;height:100%;z-index:-2;
-  background: 
-    radial-gradient(ellipse at center, rgba(255,255,255,1) 0%, rgba(255,180,255,0.6) 10%, rgba(138,43,226,0.5) 30%, rgba(75,0,130,0.7) 60%, #000 100%);
-  animation: zoomIn 15s infinite linear; /* Muter + masuk ke tengah */
-  filter: blur(0.5px);
+  background: radial-gradient(ellipse at center, rgba(255,255,255,1) 0%, rgba(255,180,255,0.6) 10%, rgba(138,43,226,0.5) 30%, rgba(75,0,130,0.7) 60%, #000 100%);
+  animation: zoomIn 15s infinite linear;
 }
 @keyframes zoomIn{
  0%{transform:scale(0.5) rotate(0deg)}
- 100%{transform:scale(4) rotate(720deg)} /* Makin kenceng masuk */
+ 100%{transform:scale(4) rotate(720deg)}
 }
 
-/* 2. Bintang Ngebut Kayak Hyperspace */
+/* 2. Bintang Ngebut Hyperspace */
 .stars{
   position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;
-  background-image: 
-    radial-gradient(2px 2px at 20% 30%, #fff, transparent),
-    radial-gradient(1px 1px at 60% 80%, #fff, transparent),
-    radial-gradient(3px 3px at 90% 20%, #fff, transparent),
-    radial-gradient(1px 1px at 40% 40%, #fff, transparent);
+  background-image: radial-gradient(2px 2px at 20% 30%, #fff, transparent), radial-gradient(1px 1px at 60% 80%, #fff, transparent);
   background-repeat: repeat;
   background-size: 300px 300px;
-  animation: starfield 2s linear infinite; /* 2s = lebih cepat */
+  animation: starfield 2s linear infinite;
 }
 @keyframes starfield{
  0%{background-position: 0 0}
- 100%{background-position: 0 2000px} /* Bintang ketarik ke bawah */
-}
-
-body{background:transparent; overflow:hidden; margin:0;} /* Wajib transparan */
+ 100%{background-position: 0 2000px}
 </style>
-
-<div class="warp"></div>
-<div class="stars"></div>
 </body>
 </html>
-
