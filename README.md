@@ -1,6 +1,6 @@
 # My Track
 
-App Tracking Premium di Pi Network
+App Track di Pi Network
 
 ## Fitur
 - Login pake Pi Browser
