@@ -1,50 +1,24 @@
-function bukaMenu() {
-  let pilihan = prompt(`Pilih Menu:
-1. Dashboard Chart 📈
-2. Galery NFT
-3. Promo Ads 🔥
-4. Tour n Travel
-5. Google Map
-6. Media Sosial
-7. News
-8. My World
+// menu.js V=1 - MESIN SWIPE KIRI KAN
+const PAGES = ['profil.html', 'map.html', 'chat.html', 'nft.html', 'market.html', 'tour.html', 'link.html'];
 
-Ketik 1-8`);
+let touchstartX = 0;
+let touchendX = 0;
 
-  // Routing sesuai pilihan
-  if (pilihan === "1") {
-    window.location.href = "dashboard.html"; 
-  } 
-  else if (pilihan === "2") {
-    window.location.href = "nft-gallery.html";
+function handleGesture() {
+  let currentPage = window.location.pathname.split("/").pop();
+  let currentIndex = PAGES.indexOf(currentPage);
+
+  if (currentIndex === -1) return; // Kalo bukan halaman menu, diem
+
+  if (touchendX < touchstartX - 50) { // SWIPE KIRI = NEXT
+    let nextIndex = (currentIndex + 1) % PAGES.length;
+    window.location.href = PAGES[nextIndex];
   }
-  else if (pilihan === "3") {
-    window.location.href = "promo-ads.html";
-  }
-  else if (pilihan === "4") {
-    window.location.href = "tour-travel.html";
-  }
-  else if (pilihan === "5") {
-    window.location.href = "google-map.html";
-  }
-  else if (pilihan === "6") {
-    window.location.href = "sosmed.html";
-  }
-  else if (pilihan === "7") {
-    window.location.href = "news.html";
-  }
-  else if (pilihan === "8") {
-    window.location.href = "my-world.html";
-  }
-  else if (pilihan === null) {
-    // User pencet BATAL
-    console.log("Menu dibatalkan");
-  }
-  else {
-    alert("Ketik 1-8 ya bang 😅");
-    bukaMenu(); // Balik lagi ke menu kalo salah ketik
+  if (touchendX > touchstartX + 50) { // SWIPE KAN = BACK
+    let prevIndex = (currentIndex - 1 + PAGES.length) % PAGES.length;
+    window.location.href = PAGES[prevIndex];
   }
 }
 
-// Panggil pas tombol hamburger lu diklik
-document.querySelector(".hamburger").addEventListener("click", bukaMenu);
+document.addEventListener('touchstart', e => { touchstartX = e.changedTouches[0].screenX });
+document.addEventListener('touchend', e => { touchendX = e.changedTouches[0].screenX; handleGesture(); });
