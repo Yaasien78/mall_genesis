@@ -8,31 +8,36 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>Pi.init({ version: "2.0", sandbox: true });</script>
 <style>
-:root{--biru:#0A1F44; --ungu:#4B0082; --kuning:#FFD700; --hitam:#000;}
+:root{
+  --biru:#0A1F44; 
+  --ungu:#4B0082; 
+  --emas:#DAA520; /* EMAS TUA */
+  --hitam:#000;
+}
 *{box-sizing:border-box}
 html,body{margin:0;padding:0;height:100%;background:#1A0033;color:#fff;font-family:'Segoe UI', Arial, sans-serif;overflow-y:auto}
-.header{position:sticky;top:0;left:0;width:100%;z-index:10;padding:12px 15px;display:flex;align-items:center;justify-content:space-between;background:var(--biru);border-bottom:3px solid var(--kuning)}
-.menu{font-size:2em;cursor:pointer;color:var(--kuning);font-weight:700;line-height:1;text-decoration:none}
-.logo{font-size:1.8em;font-weight:900;color:var(--kuning);text-shadow:2px 2px 4px var(--hitam)}
+.header{position:sticky;top:0;left:0;width:100%;z-index:10;padding:12px 15px;display:flex;align-items:center;gap:10px;background:var(--biru);border-bottom:3px solid var(--emas)}
+.menu{font-size:2em;cursor:pointer;color:var(--emas);font-weight:700;line-height:1;text-decoration:none}
+.logo{font-size:1.8em;font-weight:900;color:var(--emas);text-shadow:2px 2px 4px var(--hitam);flex-grow:1; text-align:center}
 .main{padding:15px;max-width:600px;margin:0 auto}
-.card{background:var(--ungu);border-radius:15px;padding:15px;width:100%;border:2px solid var(--kuning);box-shadow:0 0 10px rgba(0,0,0,0.3);text-align:center;margin-bottom:15px}
+.card{background:var(--ungu);border-radius:15px;padding:15px;width:100%;border:2px solid var(--emas);box-shadow:0 0 10px rgba(218,165,32,0.3);text-align:center;margin-bottom:15px}
 .title{font-size:1.1em;font-weight:500;color:#ddd;margin-bottom:5px}
-.harga-usd{font-size:3em;font-weight:900;color:var(--kuning);margin:5px 0;line-height:1}
-.harga-rp{font-size:1.2em;font-weight:700;color:var(--kuning);margin-bottom:5px}
+.harga-usd{font-size:3em;font-weight:900;color:var(--emas);margin:5px 0;line-height:1}
+.harga-rp{font-size:1.2em;font-weight:700;color:var(--emas);margin-bottom:5px}
 .persen{font-size:1.2em;font-weight:700;margin-bottom:5px}
 .update{font-size:0.8em;opacity:0.7}
 .chart-box{position:relative;height:280px;width:100%}
 .grid{display:flex;gap:15px}
 .grid.card{flex:1}
-.footer{position:sticky;bottom:0;left:0;width:100%;z-index:10;padding:15px 20px calc(15px + env(safe-area-inset-bottom)); background:var(--biru);border-top:3px solid var(--kuning)}
-.btn-login{width:100%;background:var(--kuning);color:var(--hitam);border:none;padding:16px 30px;border-radius:12px;font-size:1.2em;font-weight:900;cursor:pointer;display:block}
+.footer{position:sticky;bottom:0;left:0;width:100%;z-index:10;padding:15px 20px calc(15px + env(safe-area-inset-bottom)); background:var(--biru);border-top:3px solid var(--emas)}
+.btn-login{width:100%;background:var(--emas);color:var(--hitam);border:none;padding:16px 30px;border-radius:12px;font-size:1.2em;font-weight:900;cursor:pointer;display:block;box-shadow:0 0 15px rgba(218,165,32,0.5)}
 .loading{opacity:0.7;font-size:0.9em}
 </style>
 </head>
 <body>
 
 <header class="header">
-  <a href="menu.html" class="menu">☰</a> <!-- UDAH NYAMBUNG KE MENU.HTML -->
+  <a href="menu.html" class="menu">☰</a>
   <div class="logo">Mall Genesis</div>
   <div style="width:2em"></div>
 </header>
@@ -47,8 +52,8 @@ html,body{margin:0;padding:0;height:100%;background:#1A0033;color:#fff;font-fami
   </div>
   <div class="card"><div class="chart-box"><canvas id="chartPi"></canvas></div></div>
   <div class="grid">
-    <div class="card"><div class="title">Market Cap</div><div style="color:var(--kuning);font-weight:900;font-size:1.4em" id="mcap">-</div></div>
-    <div class="card"><div class="title">Volume 24h</div><div style="color:var(--kuning);font-weight:900;font-size:1.4em" id="vol">-</div></div>
+    <div class="card"><div class="title">Market Cap</div><div style="color:var(--emas);font-weight:900;font-size:1.4em" id="mcap">-</div></div>
+    <div class="card"><div class="title">Volume 24h</div><div style="color:var(--emas);font-weight:900;font-size:1.4em" id="vol">-</div></div>
   </div>
 </main>
 
@@ -57,20 +62,15 @@ html,body{margin:0;padding:0;height:100%;background:#1A0033;color:#fff;font-fami
 </footer>
 
 <script>
-let userLogin = null; let btnLogin = document.getElementById('btnLoginFooter'); let chart; let rateIdr = 16000;
-window.onload = async function(){
-  let u = localStorage.getItem('pi_user');
-  if(u){ userLogin = JSON.parse(u); btnLogin.textContent = 'Welcome ' + userLogin.username; }else{ btnLogin.textContent = 'Login'; }
-  await fetchKurs(); fetchData(); setInterval(fetchKurs, 60000); setInterval(fetchData, 10000);
-};
-btnLogin.onclick = async function(){
-  if(userLogin){ alert('Anda sudah login sebagai: ' + userLogin.username); return; }
-  this.textContent = 'Login...'; this.disabled = true;
-  try{ const auth = await Pi.authenticate(['username', 'payments']); userLogin = {username: auth.user.username}; localStorage.setItem('pi_user', JSON.stringify(userLogin)); btnLogin.textContent = 'Welcome ' + userLogin.username; }catch(e){ alert('Gagal login: ' + e.message); btnLogin.textContent = 'Login'; }
-  this.disabled = false;
-};
+let userLogin = null; 
+let btnLogin = document.getElementById('btnLoginFooter'); 
+let chart; 
+let rateIdr = 16000;
+function updateBtnLogin(){ if(userLogin){ btnLogin.textContent = 'Welcome ' + userLogin.username; }else{ btnLogin.textContent = 'Login'; }
+window.onload = async function(){ let u = localStorage.getItem('pi_user'); if(u){ userLogin = JSON.parse(u); } updateBtnLogin(); await fetchKurs(); fetchData(); setInterval(fetchKurs, 60000); setInterval(fetchData, 10000); };
+btnLogin.onclick = async function(){ if(userLogin){ alert('Anda sudah login sebagai: ' + userLogin.username); return; } this.textContent = 'Login...'; this.disabled = true; try{ const auth = await Pi.authenticate(['username', 'payments']); userLogin = {username: auth.user.username}; localStorage.setItem('pi_user', JSON.stringify(userLogin)); updateBtnLogin(); }catch(e){ alert('Gagal login: ' + e.message); updateBtnLogin(); } this.disabled = false; };
 async function fetchKurs(){ try{ const res = await fetch('https://open.er-api.com/v6/latest/USD'); const data = await res.json(); rateIdr = data.rates.IDR; document.getElementById('lastUpdate').textContent = `Kurs: 1 USD = Rp ${rateIdr.toFixed(2)} | Update ${new Date().toLocaleTimeString('id-ID')}`; }catch(e){ document.getElementById('lastUpdate').textContent = `Kurs: 1 USD = Rp ${rateIdr.toFixed(2)} | Gagal update`; }
-async function fetchData(){ try{ const res = await fetch('https://api.coingecko.com/api/v3/coins/pi-network?localization=false&tickers=false&market_data=true&sparkline=true'); const m = (await res.json()).market_data; let priceUsd = m.current_price.usd; document.getElementById('hargaUsd').textContent = '$' + priceUsd.toFixed(4); document.getElementById('hargaRp').textContent = 'Harga /pi = Rp ' + Math.round(priceUsd * rateIdr).toLocaleString('id-ID'); document.getElementById('mcap').textContent = '$' + (m.market_cap.usd/1000000).toFixed(2) + 'M'; document.getElementById('vol').textContent = '$' + (m.total_volume.usd/1000000).toFixed(2) + 'M'; let change = m.price_change_percentage_24h.toFixed(2); let el = document.getElementById('persenPi'); el.textContent = change + '%'; el.style.color = change >= 0? '#00ff88' : '#ff5555'; let prices = m.sparkline_7d.price.slice(-100); let labels = prices.map((_,i)=>i); if(!chart){ chart = new Chart(document.getElementById('chartPi'), {type:'line',data:{labels,datasets:[{data:prices,borderColor:'#FFD700',backgroundColor:'rgba(255,215,0,0.15)',tension:0.4,fill:true,pointRadius:0,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,animation:false,plugins:{legend:{display:false}},scales:{x:{display:false},y:{ticks:{color:'#ddd',callback:v=>v.toFixed(3).replace('.',',')}}}}}); }else{ chart.data.labels=labels; chart.data.datasets[0].data=prices; chart.update('none'); }catch(e){ document.getElementById('hargaUsd').textContent = 'Gagal load API'; }
+async function fetchData(){ try{ const res = await fetch('https://api.coingecko.com/api/v3/coins/pi-network?localization=false&tickers=false&market_data=true&sparkline=true'); const m = (await res.json()).market_data; let priceUsd = m.current_price.usd || 0; let priceIdr = priceUsd * rateIdr; document.getElementById('hargaUsd').textContent = '$' + priceUsd.toFixed(4); document.getElementById('hargaRp').textContent = 'Harga /pi = Rp ' + Math.round(priceIdr).toLocaleString('id-ID'); document.getElementById('mcap').textContent = '$' + ((m.market_cap.usd || 0)/1000000).toFixed(2) + 'M'; document.getElementById('vol').textContent = '$' + ((m.total_volume.usd || 0)/1000000).toFixed(2) + 'M'; let change = (m.price_change_percentage_24h || 0).toFixed(2); let el = document.getElementById('persenPi'); el.textContent = change + '%'; el.style.color = change >= 0? '#00ff88' : '#ff5555'; let prices = m.sparkline_7d.price; if(!prices || prices.length < 2){ prices = [priceUsd, priceUsd * 1.01, priceUsd * 0.99, priceUsd]; } prices = prices.slice(-100); let labels = prices.map((_,i)=>i); if(!chart){ chart = new Chart(document.getElementById('chartPi'), {type:'line',data:{labels,datasets:[{data:prices,borderColor:'#DAA520',backgroundColor:'rgba(218,165,32,0.15)',tension:0.4,fill:true,pointRadius:0,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,animation:false,plugins:{legend:{display:false}},scales:{x:{display:false},y:{ticks:{color:'#ddd',callback:v=>v.toFixed(3).replace('.',',')}}}}}); }else{ chart.data.labels=labels; chart.data.datasets[0].data=prices; chart.update('none'); }catch(e){ document.getElementById('hargaUsd').textContent = 'Gagal load API'; }
 </script>
 </body>
-                        </html>
+    </html>
