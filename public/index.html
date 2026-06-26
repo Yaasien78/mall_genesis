@@ -11,44 +11,45 @@
 html,body{margin:0;padding:0;height:100%;overflow:hidden;background:#000;color:#fff;font-family:Arial, sans-serif;text-align:center}
 @keyframes fadeIn{from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)}}
 
-/* 1. TEROWONGAN GALAKSI SPIRAL UNGU */
+/* 1. TEROWONGAN GALAKSI SPIRAL UNGU HALUS */
 .warp{
   position:fixed;top:0;left:0;width:100%;height:100%;z-index:-2;
   background: radial-gradient(ellipse at center, rgba(255,255,255,1) 0%, rgba(255,180,255,0.6) 10%, rgba(138,43,226,0.5) 30%, rgba(75,0,130,0.8) 60%, #000 100%);
-  animation: zoomIn 15s infinite linear;
+  animation: zoomIn 20s infinite linear;
 }
-@keyframes zoomIn{0%{transform:scale(0.5) rotate(0deg)} 100%{transform:scale(4) rotate(720deg)}}
+@keyframes zoomIn{0%{transform:scale(0.5) rotate(0deg)} 100%{transform:scale(3) rotate(360deg)}}
 
-/* 2. BINTANG NGEBUT HYPERSPACE */
+/* 2. BINTANG NGEBUT HALUS */
 .stars{
   position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;
   background-image: radial-gradient(2px 2px at 20% 30%, #fff, transparent), radial-gradient(1px 1px at 60% 80%, #fff, transparent), radial-gradient(3px 3px at 90% 20%, #fff, transparent), radial-gradient(1px 1px at 40% 10%, #fff, transparent);
-  background-repeat: repeat; background-size: 300px 300px;
-  animation: starfield 1.5s linear infinite;
+  background-repeat: repeat; background-size: 400px 400px;
+  animation: starfield 3s linear infinite;
 }
-@keyframes starfield{0%{background-position: 0 0} 100%{background-position: 0 2000px}}
+@keyframes starfield{0%{background-position: 0 0} 100%{background-position: 0 1000px}}
 
-/* 3. CONTAINER TANPA KACA - CUMA TRANSPARAN */
+/* 3. CONTAINER TRANSPARAN TANPA KACA */
 .container{
   position:relative;z-index:1;
-  background:transparent; /* HAPUS KACA, BIR TEMBUS LANGSUNG */
+  background:transparent;
   padding:40px 20px;
-  margin-top:15vh; /* TURUNIN DIKIT KE TENGAH */
+  margin-top:15vh;
   animation:fadeIn 1s ease;
 }
-h1{font-size:2.8em;margin:0 0 10px;font-weight:900;text-shadow:0 0 15px rgba(168,85,247,0.8)} /* KASIH GLOW BIAR NONGOL */
+h1{font-size:2.8em;margin:0 0 10px;font-weight:900;text-shadow:0 0 20px rgba(168,85,247,1)}
 h1 span.mall{color:#fff}
 h1 span.gen{background:linear-gradient(45deg,#a855f7,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .sub{opacity:0.9;margin-bottom:30px;font-size:1.1em;text-shadow:0 0 10px #000}
 
-.foto{border:2px dashed rgba(255,255,255,0.4);border-radius:15px;padding:25px;cursor:pointer;margin:0 auto 20px;transition:0.3s;width:250px;background:rgba(0,0,0,0.3)} /* AGAK TRANSPARAN AJA */
+.foto{border:2px dashed rgba(255,255,255,0.4);border-radius:15px;padding:25px;cursor:pointer;margin:0 auto 20px;transition:0.3s;width:250px;background:rgba(0,0,0,0.3);user-select:none;-webkit-tap-highlight-color:transparent}
 .foto:hover{background:rgba(138,43,226,0.3)}
+.foto:active{transform:scale(0.97)}
 .foto input{display:none}
-.foto img{max-width:200px;max-height:280px;border-radius:12px;margin:10px auto;display:none;border:3px solid #a855f7;box-shadow:0 0 20px rgba(168,85,247,0.7)} /* RASIO 4x6 */
+.foto img{width:200px;height:280px;object-fit:cover;border-radius:12px;margin:10px auto;display:none;border:3px solid #a855f7;box-shadow:0 0 20px rgba(168,85,247,0.7);cursor:pointer} /* BISA DIKLIK */
 
 .btn{background:linear-gradient(45deg,#7c3aed,#db2777);color:#fff;border:none;padding:16px 30px;border-radius:12px;font-size:1.1em;font-weight:700;cursor:pointer;width:250px;opacity:0;pointer-events:none;transition:0.3s;box-shadow:0 0 20px rgba(219,39,119,0.5)}
 .btn.show{opacity:1;pointer-events:auto}
-.btn:disabled{opacity:0.5}
+.btn:active{transform:scale(0.97)}
 </style>
 </head>
 <body>
@@ -60,9 +61,9 @@ h1 span.gen{background:linear-gradient(45deg,#a855f7,#ec4899);-webkit-background
   <h1><span class="mall">Mall</span> <span class="gen">Genesis</span></h1>
   <div class="sub">Marketplace dan NFT</div>
 
-  <label class="foto" onclick="document.getElementById('file').click()">
-    <img id="img" alt="Preview Foto">
-    <span id="txtFoto">📸 Upload Foto 4x6cm</span> <!-- UDAH GANTI 4x6 -->
+  <label class="foto" id="btnUpload">
+    <img id="imgKlik" alt="Preview Foto">
+    <span id="txtFoto">📸 Upload Foto 4x6cm</span>
     <input type="file" id="file" accept="image/*" onchange="uploadFoto(this)">
   </label>
 
@@ -70,33 +71,57 @@ h1 span.gen{background:linear-gradient(45deg,#a855f7,#ec4899);-webkit-background
 </div>
 
 <script>
+let galeriDibuka = false; 
+let fileInput = document.getElementById('file');
+let imgKlik = document.getElementById('imgKlik');
+let txtFoto = document.getElementById('txtFoto');
+let btnUpload = document.getElementById('btnUpload');
+let btnMasuk = document.getElementById('btnMasuk');
+
+// FUNGSI BUKA GALERI ANTI DOUBLE
+function bukaGaleri(){
+  if(!galeriDibuka){
+    galeriDibuka = true;
+    fileInput.click();
+    setTimeout(() => { galeriDibuka = false; }, 800);
+  }
+}
+
+// 1. KLIK KOTAK = BUKA GALERI
+btnUpload.onclick = bukaGaleri;
+
+// 2. KLIK FOTO = BUKA GALERI JUGA BUAT GANTI
+imgKlik.onclick = bukaGaleri; 
+
+// 3. INGAT FOTO SELAMANYA PAS BUKA APP
+window.onload = function(){
+  let f = localStorage.getItem('fotoMG');
+  if(f){
+    imgKlik.src = f;
+    imgKlik.style.display = 'block';
+    txtFoto.style.display = 'none';
+    btnMasuk.classList.add('show');
+  }
+};
+
+// 4. UPLOAD FOTO 4X6
 function uploadFoto(input){
+  galeriDibuka = false; 
   if(input.files && input.files[0]){
     let reader = new FileReader();
     reader.onload = function(e){
       localStorage.setItem('fotoMG', e.target.result);
-      let img = document.getElementById('img');
-      img.src = e.target.result;
-      img.style.display = 'block';
-      document.getElementById('txtFoto').style.display = 'none';
-      document.getElementById('btnMasuk').classList.add('show');
+      imgKlik.src = e.target.result;
+      imgKlik.style.display = 'block';
+      txtFoto.style.display = 'none';
+      btnMasuk.classList.add('show');
     };
     reader.readAsDataURL(input.files[0]);
   }
 }
 
-window.onload = function(){
-  let f = localStorage.getItem('fotoMG');
-  if(f){
-    let img = document.getElementById('img');
-    img.src = f;
-    img.style.display = 'block';
-    document.getElementById('txtFoto').style.display = 'none';
-    document.getElementById('btnMasuk').classList.add('show');
-  }
-};
-
-document.getElementById('btnMasuk').onclick = async function(){
+// 5. LOGIN PI
+btnMasuk.onclick = async function(){
   let b = this; b.textContent = 'Login...'; b.disabled = true;
   try{
     const auth = await Pi.authenticate(['username', 'payments']);
