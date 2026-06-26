@@ -1,6 +1,6 @@
-# Mall Genesis
+# My Track
 
-Mall Digital Premium di Pi Network
+App Tracking Premium di Pi Network
 
 ## Fitur
 - Login pake Pi Browser
