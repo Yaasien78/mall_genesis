@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<title>Chat</title>
+<style>
+:root{--biru:#0A1F44;--ungu:#4B0082;--emas:#DAA520;--hitam:#000;}
+body,html{margin:0;height:100%;background:#1A0033;color:#fff;font-family:'Segoe UI';display:flex;flex-direction:column;}
+.header{padding:12px 15px;display:flex;align-items:center;background:var(--biru);border-bottom:3px solid var(--emas);flex-shrink:0;}
+.back{font-size:2em;color:var(--emas);text-decoration:none;margin-right:10px;}
+.logo{font-size:1.5em;font-weight:900;color:var(--emas);text-align:center;flex-grow:1;}
+.chat-box{flex-grow:1;overflow-y:auto;padding:15px;display:flex;flex-direction:column;gap:10px;}
+.msg{max-width:75%;padding:10px 15px;border-radius:15px;font-size:0.95em;line-height:1.4;}
+.msg.me{align-self:flex-end;background:var(--emas);color:var(--hitam);border-bottom-right-radius:4px;}
+.msg.other{align-self:flex-start;background:var(--ungu);border:1px solid var(--emas);border-bottom-left-radius:4px;}
+.msg .user{font-weight:900;color:var(--emas);font-size:0.8em;margin-bottom:3px;display:block;}
+.msg.me .user{color:var(--hitam);}
+.chat-input{display:flex;padding:10px;background:var(--biru);border-top:3px solid var(--emas);gap:10px;flex-shrink:0;}
+.chat-input input{flex-grow:1;border:2px solid var(--emas);background:var(--ungu);color:#fff;border-radius:10px;padding:12px;font-size:1em;}
+.chat-input button{background:var(--emas);color:var(--hitam);border:none;border-radius:10px;padding:0 20px;font-weight:900;font-size:1em;cursor:pointer;}
+.footer{padding:10px;background:var(--biru);text-align:center;font-size:0.8em;color:#aaa;border-top:1px solid var(--emas);}
+</style>
+</head>
+<body>
+<header class="header">
+  <a href="menu.html" class="back">←</a>
+  <div class="logo">3. Chat Public</div>
+  <div style="width:2em"></div>
+</header>
+
+<main class="chat-box" id="chatBox">
+  <div class="msg other"><span class="user">System</span>Selamat datang di Chat Mall Genesis. Mode: Lokal</div>
+</main>
+
+<footer class="chat-input">
+  <input type="text" id="chatText" placeholder="Ketik pesan..." maxlength="200">
+  <button id="sendBtn">Kirim</button>
+</footer>
+<div class="footer">Mall Genesis V=43 | Swipe Kiri/Kanan | Data Chat Lokal HP</div>
+
+<script src="menu.js"></script>
+<script>
+let username = 'Tamu';
+let chatBox = document.getElementById('chatBox');
+
+// 1. AMBIL USERNAME DARI LOGIN
+let userData = localStorage.getItem('pi_user');
+if(userData){ username = JSON.parse(userData).username; }
+
+// 2. LOAD CHAT LAMA DARI LOCALSTORAGE
+let chats = JSON.parse(localStorage.getItem('mg_chat') || '[]');
+renderChats();
+
+document.getElementById('sendBtn').onclick = sendMsg;
+document.getElementById('chatText').onkeypress = e => { if(e.key==='Enter') sendMsg(); };
+
+function sendMsg(){
+  let input = document.getElementById('chatText');
+  let text = input.value.trim();
+  if(text === '') return;
+  
+  let msg = {user: username, text: text, time: Date.now()};
+  chats.push(msg);
+  localStorage.setItem('mg_chat', JSON.stringify(chats)); // SIMPAN LOKAL
+  
+  input.value = '';
+  renderChats();
+}
+
+function renderChats(){
+  chatBox.innerHTML = '';
+  chats.slice(-50).forEach(m => { // TAMPILIN 50 CHAT TERAKHIR
+    let div = document.createElement('div');
+    div.className = 'msg ' + (m.user === username ? 'me' : 'other');
+    div.innerHTML = `<span class="user">@${m.user}</span>${m.text}`;
+    chatBox.appendChild(div);
+  });
+  chatBox.scrollTop = chatBox.scrollHeight; // SCROLL KE BAWAH
+}
+</script>
+</body>
+  </html>
