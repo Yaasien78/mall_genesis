@@ -251,20 +251,6 @@ function pindahLayar(nama){
   
   if(nama=='myworld') loadNote();
 }
-
-// MENU
-function bukaMenu(){
-  let pilih = prompt('Pilih Menu:\n1.Dashboard Chart 📈\n2.Galery NFT\n3.Promo Ads 🔥\n4.Tour n Travel\n5.Google Map\n6.Media Sosial\n7.News\n8.My World\nKetik 1-8');
-  if(pilih=='1') pindahLayar('chart');
-  if(pilih=='2') pindahLayar('home');
-  if(pilih=='3') pindahLayar('promo');
-  if(pilih=='4') pindahLayar('tour');
-  if(pilih=='5') pindahLayar('map');
-  if(pilih=='6') pindahLayar('sosmed');
-  if(pilih=='7') pindahLayar('news');
-  if(pilih=='8') pindahLayar('myworld');
-}
-
 // SWIPE KIRI KANAN
 let startX = 0;
 let urutanLayar = ['chart','home','promo','tour','map','sosmed','news','myworld'];
@@ -323,6 +309,6 @@ function bukaApp(nama,link){ window.open(link,'_blank'); alert('Membuka '+nama+'
 function simpanNote(){ let note = document.getElementById('noteProfil').value; localStorage.setItem('noteProfil_'+currentUser, note); alert('✅ Note disimpan!'); }
 function loadNote(){ let note = localStorage.getItem('noteProfil_'+currentUser); if(note) document.getElementById('noteProfil').value = note; }
 </script>
-
+<script src="menu.js"></script>
 </body>
-    </html>
+</html>
