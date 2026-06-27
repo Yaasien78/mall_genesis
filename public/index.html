@@ -170,5 +170,17 @@ function initChart(labels, data){
   });
 }
 </script>
+  <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+<script>
+  Pi.init({ version: "2.0", sandbox: true }) // <-- KUNCINYA DI SINI: true = Testnet
+
+  async function auth() {
+    const scopes = ['username', 'payments']; 
+    const authResult = await Pi.authenticate(scopes, onIncompletePaymentFound);
+    console.log(authResult); 
+    alert("Login Testnet Berhasil: " + authResult.user.username)
+  }
+</script>
+<button onclick="auth()">Sign in with Pi TESTNET</button>
 </body>
 </html>
