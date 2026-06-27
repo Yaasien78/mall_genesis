@@ -1,4 +1,4 @@
-// menu.js V=1 - MESIN SWIPE KIRI KAN
+// menu.js V=1 - MESIN SWIPE KIRI KANAN
 const PAGES = ['profil.html', 'map.html', 'chat.html', 'nft.html', 'market.html', 'tour.html', 'link.html'];
 
 let touchstartX = 0;
@@ -14,7 +14,7 @@ function handleGesture() {
     let nextIndex = (currentIndex + 1) % PAGES.length;
     window.location.href = PAGES[nextIndex];
   }
-  if (touchendX > touchstartX + 50) { // SWIPE KAN = BACK
+  if (touchendX > touchstartX + 50) { // SWIPE KANAN = BACK
     let prevIndex = (currentIndex - 1 + PAGES.length) % PAGES.length;
     window.location.href = PAGES[prevIndex];
   }
