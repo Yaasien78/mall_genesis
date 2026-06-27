@@ -28,7 +28,7 @@ export default function Home() {
       
       window.Pi.createPayment({
         amount: 0.01,
-        memo: "Mint NFT Mall Genesis #001",
+        memo: "Mint NFT My Track #001",
         metadata: { nftId: "001" }
       }, {
         onReadyForServerApproval: (paymentId) => {
@@ -57,7 +57,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4">
-      <h1 className="text-2xl font-bold mb-4">Mall Genesis NFT</h1>
+      <h1 className="text-2xl font-bold mb-4">My Track</h1>
       {user ? <p>Hi {user.username}</p> : <p>Login Pi dulu</p>}
       <button 
         onClick={handleBuy}
