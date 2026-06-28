@@ -56,6 +56,8 @@
   </div>
   <footer>My Track V-43 © 2026 | Swipe Kiri/Kanan</footer>
 </div>
+   <script src="menu.js"></script>
+<script>
 
 <script>
 // UDAH GUA ISI URL + KEY LU
@@ -76,7 +78,7 @@ const tabs = document.querySelectorAll('.tab');
 
 // INIT PI SDK
 window.onload = () => {
-  Pi.init({ version: "2.0", sandbox: false }); 
+  Pi.init({ version: "2.0", sandbox: true }); 
   checkIfLoggedIn();
 };
 
