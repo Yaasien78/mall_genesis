@@ -3,78 +3,97 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-<title>3. Chat Public & Privasi</title>
+<title>3. Chat</title>
 <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 <style>
 :root{--biru:#0A1F44;--ungu:#4B0082;--emas:#DAA520;--hitam:#000;--bg:#1A0033;}
 html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:#fff;font-family:'Segoe UI';}
-.page{width:100vw;height:100vh;display:flex;flex-direction:column;overflow-y:auto;}
+
+/* ====== SLIDER 3 HALAMAN DI DALAM CHAT.HTML ====== */
+.slider-container{display:flex;width:300vw;height:100vh;overflow-x:scroll;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.slider-container::-webkit-scrollbar{display:none;}
+.page{width:100vw;height:100vh;flex-shrink:0;scroll-snap-align:center;display:flex;flex-direction:column;overflow-y:auto;background:var(--bg);}
+
 .header{padding:12px 15px;display:flex;align-items:center;background:var(--biru);border-bottom:3px solid var(--emas);position:sticky;top:0;z-index:10;flex-shrink:0;}
 .back{font-size:2em;color:var(--emas);text-decoration:none;margin-right:10px;cursor:pointer;}
-.logo{font-size:1.2em;font-weight:900;color:var(--emas);text-align:center;flex-grow:1;}
-.main{padding:15px;max-width:500px;margin:0 auto;flex:1;width:100%;box-sizing:border-box;display:flex;flex-direction:column;}
-.footer{padding:20px;font-size:0.8em;color:#aaa;text-align:center;flex-shrink:0; border-top:3px solid var(--emas);}
-.tab-btns{display:flex;gap:8px;margin-bottom:15px;}
-.tab-btns button{flex:1;background:var(--ungu);color:#fff;border:2px solid var(--emas);border-radius:12px;padding:15px 5px;font-weight:700;font-size:1em;cursor:pointer;}
+.logo{font-size:1.5em;font-weight:900;color:var(--emas);text-align:center;flex-grow:1;}
+.main{padding:15px;max-width:600px;margin:0 auto;flex:1;width:100%;box-sizing:border-box;display:flex;flex-direction:column;}
+.footer{padding:15px;font-size:0.8em;color:#aaa;text-align:center;flex-shrink:0; border-top:3px solid var(--emas);}
+
+/* CHAT STYLE */
+.tab-btns{display:flex;gap:8px;margin-bottom:10px;}
+.tab-btns button{flex:1;background:var(--ungu);color:#fff;border:2px solid var(--emas);border-radius:12px;padding:12px 5px;font-weight:700;font-size:1em;cursor:pointer;}
 .tab-btns button.active{background:var(--emas);color:var(--hitam);}
-#chat-box{flex:1;overflow-y:auto;background:#2a0044;border:2px solid var(--emas);border-radius:12px;padding:15px;text-align:left;margin-bottom:15px;}
-#user-list{background:#2a0044;border:2px solid var(--emas);border-radius:12px;padding:15px;margin-bottom:15px;display:none;text-align:left;font-size:1em;}
-#loginBtn{width:100%;background:var(--emas);color:var(--hitam);padding:15px;border:none;border-radius:12px;font-weight:700;font-size:1em;margin-bottom:15px;cursor:pointer;}
+#chat-box{flex:1;overflow-y:auto;background:#2a0044;border:2px solid var(--emas);border-radius:12px;padding:15px;text-align:left;margin-bottom:10px;height: calc(100vh - 230px);}
+#user-list{background:#2a0044;border:2px solid var(--emas);border-radius:12px;padding:15px;margin-bottom:10px;display:none;text-align:left;font-size:1em;max-height:25vh;overflow-y:auto;}
+#loginBtn{width:100%;background:var(--emas);color:var(--hitam);padding:15px;border:none;border-radius:12px;font-weight:700;font-size:1em;margin-bottom:10px;cursor:pointer;}
 .chat-input-wrap{display:flex;gap:8px;margin-top:auto;}
-#input{flex:1;background:#2a0044;color:#fff;border:2px solid var(--emas);border-radius:12px;padding:15px;font-weight:700;font-size:1em;}
-#kirim{background:var(--emas);color:var(--hitam);border:2px solid var(--emas);border-radius:12px;padding:15px 20px;font-weight:700;font-size:1em;cursor:pointer;}
+#input{flex:1;background:#2a0044;color:#fff;border:2px solid var(--emas);border-radius:12px;padding:12px;font-weight:700;font-size:1em;}
+#kirim{background:var(--emas);color:var(--hitam);border:2px solid var(--emas);border-radius:12px;padding:12px 20px;font-weight:700;font-size:1em;cursor:pointer;}
+
+/* ISI MAP & NFT DUMMY */
+.main-dummy{text-align:center;padding-top:40px;font-size:1.2em;color:#aaa;}
 </style>
 </head>
 <body>
-  <div class="page">
-    <header class="header"><a href="menu.html" class="back">←</a><div class="logo">3. Chat Public & Privasi</div><div style="width:2em"></div></header>
-    <main class="main">
-      <button id="loginBtn" onclick="loginPi()">1. Login Pi Dulu</button>
-      <div id="app" style="display:none; flex-direction:column; flex:1;">
-        <div class="tab-btns" id="appTabs"><button id="public" onclick="setMode('public')">Public</button><button id="team" onclick="setMode('team')">Team</button><button id="privasi" onclick="setMode('privasi')">Privasi</button></div>
-        <div id="user-list"></div><div id="chat-box">Silakan pilih tab...</div>
-        <div class="chat-input-wrap" id="inputWrap" style="display:none;"><input id="input" placeholder="Ketik pesan..." onkeypress="if(event.key==='Enter') kirimPesan()"><button id="kirim" onclick="kirimPesan()">Kirim</button></div>
-      </div>
-    </main>
-    <footer class="footer">Swipe Kiri/Kanan</footer>
+
+  <!-- SLIDER 3 HALAMAN: 2 MAP | 3 CHAT | 4 NFT -->
+  <div class="slider-container" id="slider">
+
+    <!-- HAL 2. MAP GOOGLE -->
+    <div class="page">
+      <header class="header"><a href="menu.html" class="back">←</a><div class="logo">2. Map Google</div><div style="width:2em"></div></header>
+      <main class="main"><div class="main-dummy">Isi Map Google Disini<br><small>Swipe Kanan ke Chat</small></div></main>
+      <footer class="footer">Swipe Kiri/Kanan</footer>
+    </div>
+    
+    <!-- HAL 3. CHAT = AKTIF -->
+    <div class="page" id="chat-page">
+      <header class="header"><a href="menu.html" class="back">←</a><div class="logo">3. Chat</div><div style="width:2em"></div></header>
+      <main class="main">
+        <button id="loginBtn" onclick="loginPi()">Login Pi Dulu</button>
+        <div id="app" style="display:none; flex-direction:column; flex:1;">
+          <div class="tab-btns" id="appTabs"><button id="public" onclick="setMode('public')">Public</button><button id="team" onclick="setMode('team')">Team</button><button id="privasi" onclick="setMode('privasi')">Privasi</button></div>
+          <div id="user-list"></div><div id="chat-box">Pilih tab...</div>
+          <div class="chat-input-wrap" id="inputWrap" style="display:none;"><input id="input" placeholder="Ketik pesan..." onkeypress="if(event.key==='Enter') kirimPesan()"><button id="kirim" onclick="kirimPesan()">Kirim</button></div>
+        </div>
+      </main>
+      <footer class="footer">Swipe Kiri/Kanan</footer>
+    </div>
+
+    <!-- HAL 4. NFT -->
+    <div class="page">
+      <header class="header"><a href="menu.html" class="back">←</a><div class="logo">4. Galery NFT</div><div style="width:2em"></div></header>
+      <main class="main"><div class="main-dummy">Isi Galery NFT Disini<br><small>Swipe Kiri ke Chat</small></div></main>
+      <footer class="footer">Swipe Kiri/Kanan</footer>
+    </div>
+
   </div>
 
 <script type="module">
   import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-
-  // ===== UDAH GUE ISI PUNYA LU =====
   const SUPABASE_URL = 'https://aecidmcsdtkshjdnrrrd.supabase.co'
   const SUPABASE_KEY = 'sb_publishable_Ha3M2Q6FzUGaTVV4rtnong_lkHZrQWD'
-  // ==================================
-
   const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
-
   let currentUser = null; let currentMode = 'public'; let currentReceiver = null; let channel = null;
+  
+  window.onload = () => { document.getElementById('slider').scrollLeft = window.innerWidth * 1; } // Auto buka di Hal 3 Tengah
 
   window.loginPi = async () => {
-    try {
-      Pi.init({ version: "2.0", sandbox: true }); // ganti false kalau udah live di Pi Browser
-      const auth = await Pi.authenticate(['username']);
+    try { Pi.init({ version: "2.0", sandbox: true }); const auth = await Pi.authenticate(['username']);
       currentUser = { uid: auth.user.uid, username: auth.user.username };
-      document.getElementById('loginBtn').style.display = 'none';
-      document.getElementById('app').style.display = 'flex';
-      document.getElementById('inputWrap').style.display = 'flex';
+      document.getElementById('loginBtn').style.display = 'none'; document.getElementById('app').style.display = 'flex'; document.getElementById('inputWrap').style.display = 'flex';
       setMode('public');
     } catch(e) { alert('Login gagal: ' + e.message) }
   }
-
   const TABLE_MAP = { public: 'message_public', team: 'message_team', privasi: 'message_dm' };
-
   window.setMode = async (mode) => {
     currentMode = mode; currentReceiver = null;
-    document.querySelectorAll('.tab-btns button').forEach(b => b.classList.remove('active'));
-    document.getElementById(mode).classList.add('active');
-    document.getElementById('chat-box').innerHTML = 'Loading...';
-    if(channel) supabase.removeChannel(channel);
+    document.querySelectorAll('.tab-btns button').forEach(b => b.classList.remove('active')); document.getElementById(mode).classList.add('active');
+    document.getElementById('chat-box').innerHTML = 'Loading...'; if(channel) supabase.removeChannel(channel);
     if(mode === 'privasi') { document.getElementById('user-list').style.display = 'block'; await loadUsers(); }
     else { document.getElementById('user-list').style.display = 'none'; loadMessages(); subscribeRealtime(); }
   }
-
   async function loadUsers() {
     const box = document.getElementById('user-list'); box.innerHTML = 'Ambil data user...';
     const { data, error } = await supabase.from('message_public').select('pi_uid, pi_username').limit(50);
@@ -82,15 +101,13 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:#fff;f
     const unique = [...new Map(data.map(i => [i.pi_uid, i])).values()].filter(u => u.pi_uid!== currentUser.uid);
     box.innerHTML = ''; unique.forEach(u => { const div = document.createElement('div'); div.textContent = u.pi_username; div.style.padding='8px 0'; div.style.borderBottom='1px solid #444'; div.style.cursor='pointer'; div.onclick = () => { currentReceiver = {uid: u.pi_uid, username: u.pi_username}; box.style.display = 'none'; document.getElementById('chat-box').innerHTML = `<p style="text-align:center;color:var(--emas)">Chat dengan ${u.pi_username}</p>`; loadMessages(); subscribeRealtime(); }; box.appendChild(div); });
   }
-
   async function loadMessages() {
     const box = document.getElementById('chat-box'); const table = TABLE_MAP[currentMode];
     let query = supabase.from(table).select('*').order('created_at', {ascending: true}).limit(100);
     if (currentMode === 'privasi' && currentReceiver) { query = query.or(`and(sender_uid.eq.${currentUser.uid},receiver_uid.eq.${currentReceiver.uid}),and(sender_uid.eq.${currentReceiver.uid},receiver_uid.eq.${currentUser.uid})`); } else if(currentMode === 'privasi') { box.innerHTML = 'Pilih orang dulu'; return; }
-    const { data, error } = await query; if(error) { box.innerHTML = 'Error load: ' + error.message + '. Cek RLS Supabase'; return; }
+    const { data, error } = await query; if(error) { box.innerHTML = 'Error: ' + error.message; return; }
     box.innerHTML = ''; data.forEach(renderMsg); box.scrollTop = box.scrollHeight;
   }
-
   function subscribeRealtime() {
     const table = TABLE_MAP[currentMode];
     channel = supabase.channel('chat_' + currentMode).on('postgres_changes', { event: 'INSERT', schema: 'public', table: table }, payload => {
@@ -99,18 +116,16 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:#fff;f
       renderMsg(msg);
     }).subscribe();
   }
-
   function renderMsg(msg) {
     const box = document.getElementById('chat-box'); const name = msg.pi_username || msg.sender_username || 'Anon';
     const div = document.createElement('div'); div.style.margin = '6px 0'; div.innerHTML = `<b style="color:var(--emas)">${name}:</b> ${msg.text}`;
     box.appendChild(div); box.scrollTop = box.scrollHeight;
   }
-
   window.kirimPesan = async () => {
     const input = document.getElementById('input'); const text = input.value.trim(); if(!text ||!currentUser) return; input.value = '';
     const table = TABLE_MAP[currentMode];
     if(currentMode === 'public' || currentMode === 'team') { const { error } = await supabase.from(table).insert({text, pi_uid: currentUser.uid, pi_username: currentUser.username}); if(error) alert('Gagal kirim: ' + error.message); }
-    if(currentMode === 'privasi') { if(!currentReceiver) return alert('Pilih orang dulu di Tab Privasi'); const { error } = await supabase.from(table).insert({text, sender_uid: currentUser.uid, receiver_uid: currentReceiver.uid, sender_username: currentUser.username}); if(error) alert('Gagal kirim DM: ' + error.message); }
+    if(currentMode === 'privasi') { if(!currentReceiver) return alert('Pilih orang dulu'); const { error } = await supabase.from(table).insert({text, sender_uid: currentUser.uid, receiver_uid: currentReceiver.uid, sender_username: currentUser.username}); if(error) alert('Gagal kirim DM: ' + error.message); }
   }
 </script>
 </body>
