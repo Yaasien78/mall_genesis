@@ -3,33 +3,34 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-<title>Menu Chat 2-3-4</title>
+<title>Chat 2-3-4</title>
 <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 <style>
 :root{--biru:#0A1F44;--ungu:#4B0082;--emas:#DAA520;--hitam:#000;--bg:#1A0033;}
 html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:#fff;font-family:'Segoe UI';}
 
-/* ===== KUNCI SWIPE 3 HALAMAN ===== */
 .slider-wrap{width:100vw;height:100vh;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;display:flex;}
 .slider-wrap::-webkit-scrollbar{display:none;}
 .page{width:100vw;height:100vh;flex-shrink:0;scroll-snap-align:start;display:flex;flex-direction:column;overflow-y:auto;background:var(--bg);}
 
-.header{padding:12px 15px;display:flex;align-items:center;background:var(--biru);border-bottom:3px solid var(--emas);position:sticky;top:0;z-index:10;flex-shrink:0;}
+/* HEADER DIUBAH: 3 TAB DI DALAM */
+.header{padding:10px 8px;display:flex;flex-direction:column;gap:8px;background:var(--biru);border-bottom:3px solid var(--emas);position:sticky;top:0;z-index:10;flex-shrink:0;}
+.header-top{display:flex;align-items:center;width:100%;}
 .back{font-size:2em;color:var(--emas);text-decoration:none;margin-right:10px;cursor:pointer;}
-.logo{font-size:1.5em;font-weight:900;color:var(--emas);text-align:center;flex-grow:1;}
+.logo{font-size:1.5em;font-weight:900;color:var(--emas);text-align:center;flex-grow:1;} /* JUDUL 3.CHAT DIHAPUS */
+.tab-btns{display:flex;gap:8px;width:100%;padding:0 4px;}
+.tab-btns button{flex:1;background:var(--ungu);color:#fff;border:2px solid var(--emas);border-radius:12px;padding:12px 5px;font-weight:700;font-size:1em;cursor:pointer;}
+.tab-btns button.active{background:var(--emas);color:var(--hitam);}
+
 .main{padding:15px;max-width:600px;margin:0 auto;flex:1;width:100%;box-sizing:border-box;display:flex;flex-direction:column;}
 .footer{padding:15px;font-size:0.8em;color:#aaa;text-align:center;flex-shrink:0; border-top:3px solid var(--emas);}
 
-/* CHAT STYLE */
-.tab-btns{display:flex;gap:8px;margin-bottom:10px;}
-.tab-btns button{flex:1;background:var(--ungu);color:#fff;border:2px solid var(--emas);border-radius:12px;padding:12px 5px;font-weight:700;font-size:1em;cursor:pointer;}
-.tab-btns button.active{background:var(--emas);color:var(--hitam);}
-#chat-box{flex:1;overflow-y:auto;background:#2a0044;border:2px solid var(--emas);border-radius:12px;padding:15px;text-align:left;margin-bottom:10px;height: calc(100vh - 260px);}
-#user-list{background:#2a0044;border:2px solid var(--emas);border-radius:12px;padding:15px;margin-bottom:10px;display:none;text-align:left;font-size:1em;max-height:20vh;overflow-y:auto;}
-#loginBtn{width:100%;background:var(--emas);color:var(--hitam);padding:15px;border:none;border-radius:12px;font-weight:700;font-size:1em;margin-bottom:10px;cursor:pointer;}
+/* KOTAK DIPENDEKIN */
+#chat-box{flex:1;overflow-y:auto;background:#2a0044;border:2px solid var(--emas);border-radius:12px;padding:15px;text-align:left;margin-bottom:10px;height: calc(100vh - 210px);} /* KUNCI: Biar tombol kirim keliatan */
+#user-list{background:#2a0044;border:2px solid var(--emas);border-radius:12px;padding:15px;margin-bottom:10px;display:none;text-align:left;font-size:1em;max-height:18vh;overflow-y:auto;}
 .chat-input-wrap{display:flex;gap:8px;margin-top:auto;}
 #input{flex:1;background:#2a0044;color:#fff;border:2px solid var(--emas);border-radius:12px;padding:12px;font-weight:700;font-size:1em;}
-#kirim{background:var(--emas);color:var(--hitam);border:2px solid var(--emas);border-radius:12px;padding:12px 20px;font-weight:700;font-size:1em;cursor:pointer;}
+#kirim{background:var(--emas);color:var(--hitam);border:2px solid var(--emas);border-radius:12px;padding:12px 20px;font-weight:700;font-size:1em;cursor:pointer;aspect-ratio:1/1;} /* SEGI EMPAT */
 .main-dummy{text-align:center;padding-top:40px;font-size:1.2em;color:#aaa;}
 </style>
 </head>
@@ -39,20 +40,23 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:#fff;f
 
     <!-- HAL 2. MAP GOOGLE -->
     <div class="page" id="p2">
-      <header class="header"><a href="menu.html" class="back">←</a><div class="logo">2. Map Google</div><div style="width:2em"></div></header>
+      <header class="header">
+        <div class="header-top"><a href="menu.html" class="back">←</a><div class="logo">2. Map Google</div><div style="width:2em"></div></div>
+      </header>
       <main class="main"><div class="main-dummy">Isi Map Google Disini<br><small>Swipe Kanan ke Chat</small></div></main>
       <footer class="footer">Swipe Kiri/Kanan</footer>
     </div>
     
-    <!-- HAL 3. CHAT = TENGAH -->
+    <!-- HAL 3. CHAT -->
     <div class="page" id="p3">
-      <header class="header"><a href="menu.html" class="back">←</a><div class="logo">3. Chat</div><div style="width:2em"></div></header>
+      <header class="header">
+        <div class="header-top"><a href="menu.html" class="back">←</a><div class="logo"></div><div style="width:2em"></div></div> <!-- JUDUL KOSONG -->
+        <div class="tab-btns"><button id="public" onclick="setMode('public')">Public</button><button id="team" onclick="setMode('team')">Team</button><button id="privasi" onclick="setMode('privasi')">Privasi</button></div>
+      </header>
       <main class="main">
-        <button id="loginBtn" onclick="loginPi()">Login Pi Dulu</button>
-        <div id="app" style="display:none; flex-direction:column; flex:1;">
-          <div class="tab-btns"><button id="public" onclick="setMode('public')">Public</button><button id="team" onclick="setMode('team')">Team</button><button id="privasi" onclick="setMode('privasi')">Privasi</button></div>
-          <div id="user-list"></div><div id="chat-box">Pilih tab...</div>
-          <div class="chat-input-wrap" id="inputWrap" style="display:none;"><input id="input" placeholder="Ketik pesan..." onkeypress="if(event.key==='Enter') kirimPesan()"><button id="kirim" onclick="kirimPesan()">Kirim</button></div>
+        <div id="app" style="display:flex; flex-direction:column; flex:1;">
+          <div id="user-list"></div><div id="chat-box">Loading...</div>
+          <div class="chat-input-wrap" id="inputWrap"><input id="input" placeholder="Ketik pesan..." onkeypress="if(event.key==='Enter') kirimPesan()"><button id="kirim" onclick="kirimPesan()">➤</button></div>
         </div>
       </main>
       <footer class="footer">Swipe Kiri/Kanan</footer>
@@ -60,7 +64,9 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:#fff;f
 
     <!-- HAL 4. NFT -->
     <div class="page" id="p4">
-      <header class="header"><a href="menu.html" class="back">←</a><div class="logo">4. Galery NFT</div><div style="width:2em"></div></header>
+      <header class="header">
+        <div class="header-top"><a href="menu.html" class="back">←</a><div class="logo">4. Galery NFT</div><div style="width:2em"></div></div>
+      </header>
       <main class="main"><div class="main-dummy">Isi Galery NFT Disini<br><small>Swipe Kiri ke Chat</small></div></main>
       <footer class="footer">Swipe Kiri/Kanan</footer>
     </div>
@@ -74,20 +80,20 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:#fff;f
   const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
   let currentUser = null; let currentMode = 'public'; let currentReceiver = null; let channel = null;
   
-  // KUNCI: Pas buka file, langsung scroll ke Hal 3 tengah
-  document.addEventListener('DOMContentLoaded', () => { 
+  // AUTO LOGIN PI TANPA TOMBOL
+  window.addEventListener('load', async () => { 
     document.getElementById('slider').scrollLeft = window.innerWidth; 
+    try { 
+      Pi.init({ version: "2.0", sandbox: true }); 
+      const auth = await Pi.authenticate(['username']);
+      currentUser = { uid: auth.user.uid, username: auth.user.username };
+      setMode('public');
+    } catch(e) { document.getElementById('chat-box').innerHTML = 'Login Pi gagal: ' + e.message }
   });
 
-  window.loginPi = async () => {
-    try { Pi.init({ version: "2.0", sandbox: true }); const auth = await Pi.authenticate(['username']);
-      currentUser = { uid: auth.user.uid, username: auth.user.username };
-      document.getElementById('loginBtn').style.display = 'none'; document.getElementById('app').style.display = 'flex'; document.getElementById('inputWrap').style.display = 'flex';
-      setMode('public');
-    } catch(e) { alert('Login gagal: ' + e.message) }
-  }
   const TABLE_MAP = { public: 'message_public', team: 'message_team', privasi: 'message_dm' };
   window.setMode = async (mode) => {
+    if(!currentUser) return;
     currentMode = mode; currentReceiver = null;
     document.querySelectorAll('.tab-btns button').forEach(b => b.classList.remove('active')); document.getElementById(mode).classList.add('active');
     document.getElementById('chat-box').innerHTML = 'Loading...'; if(channel) supabase.removeChannel(channel);
