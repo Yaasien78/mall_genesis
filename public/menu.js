@@ -1,24 +1,17 @@
-// menu.js V=1 - MESIN SWIPE KIRI KANAN
-const PAGES = ['profil.html', 'map.html', 'chat.html', 'nft.html', 'market.html', 'tour.html', 'link.html'];
+// menu.js VERSI FINAL - My Track V2
+document.addEventListener('DOMContentLoaded', () => {
+  
+  // 1. Ambil nama file html yang lagi dibuka. Misal: profil.html
+  const currentPage = window.location.pathname.split("/").pop();
 
-let touchstartX = 0;
-let touchendX = 0;
+  // 2. Cek semua link di sidebar
+  document.querySelectorAll('.nav-link').forEach(link => {
+    const linkPage = link.getAttribute('href'); // profil.html, ads.html, info.html
 
-function handleGesture() {
-  let currentPage = window.location.pathname.split("/").pop();
-  let currentIndex = PAGES.indexOf(currentPage);
+    // 3. Kalau cocok, kasih class 'active' ke <li> nya
+    if (linkPage === currentPage) {
+      link.parentElement.classList.add('active'); 
+    }
+  });
 
-  if (currentIndex === -1) return; // Kalo bukan halaman menu, diem
-
-  if (touchendX < touchstartX - 50) { // SWIPE KIRI = NEXT
-    let nextIndex = (currentIndex + 1) % PAGES.length;
-    window.location.href = PAGES[nextIndex];
-  }
-  if (touchendX > touchstartX + 50) { // SWIPE KANAN = BACK
-    let prevIndex = (currentIndex - 1 + PAGES.length) % PAGES.length;
-    window.location.href = PAGES[prevIndex];
-  }
-}
-
-document.addEventListener('touchstart', e => { touchstartX = e.changedTouches[0].screenX });
-document.addEventListener('touchend', e => { touchendX = e.changedTouches[0].screenX; handleGesture(); });
+});
