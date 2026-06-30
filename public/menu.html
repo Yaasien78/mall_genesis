@@ -15,7 +15,7 @@
    .card { background: rgba(26, 26, 46, 0.8); backdrop-filter: blur(5px); margin-bottom: 15px; border-radius: 12px; padding: 10px; cursor: pointer; border: 1px solid rgba(255,215,0,0.3); }
    .footer { position: fixed; bottom: 0; left:0; width: 100%; height: 60px; background: #001f3f; border-top: 2px solid gold; display: flex; align-items: center; justify-content: space-around; z-index: 2; }
    .btn-gold { background: gold; color: black; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; }
-    #pi-login-btn { background: #fff; color: #5a2d82; border: none; padding: 8px 16px; border-radius: 8px; font-weight: bold; }
+   .btn-login { background: #fff; color: #5a2d82; border: none; padding: 8px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; }
     @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
     @keyframes starsMove { 0% { background-position: 0 0; } 100% { background-position: 0 1000px; } }
   </style>
@@ -34,7 +34,7 @@
       </div>
     </div>
     <div class="footer">
-      <div id="pi-login-btn">Login Pi...</div>
+      <button id="pi-login-btn" class="btn-login" onclick="loginPi()">Login Pi...</button> <!-- [KUNCI] JADI TOMBOL -->
       <button class="btn-gold" onclick="bayarPost()">Post + 0.1π</button>
     </div>
   </div>
@@ -56,22 +56,26 @@
   let currentUser = null;
   const API_URL = 'https://api.mytrack.app'; // [GANTI] URL backend lu
 
-  // [KUNCI] PI SDK WAJIB TUNGGU SIAP DULU
   function onPiSdkReady() {
     Pi.init({ version: "2.0", sandbox: true }); // TESTNET
+    // JANGAN AUTO AUTHENTICATE DI SINI
+  }
 
+  // [KUNCI] FUNGSI LOGIN DIPISAH
+  function loginPi() {
     Pi.authenticate(['username', 'payments'], onIncompletePaymentFound)
-     .then(onReadyForServerAuth)
-     .catch(onError);
+    .then(onReadyForServerAuth)
+    .catch(onError);
   }
 
   function onReadyForServerAuth(authResult) {
     currentUser = authResult.user;
     document.getElementById('pi-login-btn').innerText = '@' + currentUser.username;
+    document.getElementById('pi-login-btn').disabled = true; // Biar gak bisa klik lagi
   }
 
   function bayarPost() {
-    if(!currentUser) return alert('Login Pi dulu bro');
+    if(!currentUser) return alert('Login Pi dulu bro'); // Ini yg muncul di SS lu
 
     const paymentData = { amount: 0.1, memo: "Post MyTrack Testnet", metadata: { app: "MyTrack", user: currentUser.username } };
 
@@ -84,13 +88,12 @@
   }
 
   function onIncompletePaymentFound(payment) {}
-  function onError(error, payment) { alert(error); }
+  function onError(error, payment) { alert('Auth Error: ' + error); }
 
-  // SCRIPT HALAMAN
   const DUMMY_POSTS = { 1: {user: '@yaasien', desc: 'Logo My Track V2', post: 'https://placehold.co/400x400/0f0f1a/FFD700?text=LOGO'} };
   function showPage(pageId) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.getElementById(pageId).classList.add('active'); window.scrollTo(0,0); }
   function showPost(id) { const p = DUMMY_POSTS[id]; document.getElementById('review-content').innerHTML = `<h2>${p.user}</h2><p>${p.desc}</p><img src="${p.post}" style="width: 100%; border-radius: 12px;">`; showPage('review'); }
 </script>
 
 </body>
-</html>
+  </html>
