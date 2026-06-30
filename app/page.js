@@ -10,7 +10,7 @@ const DUMMY_POSTS = [
 ];
 
 export default function Home() {
-  const [showApp, setShowApp] = useState(false);
+  const [showApp, setShowApp] = useState(true); // <- PAKSA TRUE
   const [page, setPage] = useState('feed');
   const [selectedPost, setSelectedPost] = useState(null);
 
