@@ -21,10 +21,8 @@
   </style>
 </head>
 <body>
-
 <div class="spaceBg">
   <div class="stars"></div>
-
   <div id="feed" class="page active">
     <div class="ticker"><span>TESTNET MODE | My Track 2026</span></div>
     <div style="padding-bottom: 80px;">
@@ -34,59 +32,51 @@
       </div>
     </div>
     <div class="footer">
-      <button id="pi-login-btn" class="btn-login" onclick="loginPi()">Login Pi...</button> <!-- [KUNCI] JADI TOMBOL -->
+      <button id="pi-login-btn" class="btn-login" onclick="loginPi()">Login Pi...</button> <!-- [KUNCI] INI BUTTON -->
       <button class="btn-gold" onclick="bayarPost()">Post + 0.1π</button>
     </div>
   </div>
-
   <div id="review" class="page" style="padding-bottom: 80px;">
     <button class="back-btn" onclick="showPage('feed')">← Back</button>
     <div id="review-content"></div>
   </div>
-
   <div id="post" class="page">
     <button class="back-btn" onclick="showPage('feed')">← Back</button>
     <h2>✅ Post Berhasil!</h2>
   </div>
-
 </div>
 
 <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 <script>
   let currentUser = null;
-  const API_URL = 'https://api.mytrack.app'; // [GANTI] URL backend lu
+  const API_URL = 'https://api.mytrack.app';
 
-  function onPiSdkReady() {
-    Pi.init({ version: "2.0", sandbox: true }); // TESTNET
-    // JANGAN AUTO AUTHENTICATE DI SINI
+  function onPiSdkReady() { // [KUNCI] INI WAJIB DARI PI
+    Pi.init({ version: "2.0", sandbox: true }); // Cuma init doang, gak auth
   }
 
-  // [KUNCI] FUNGSI LOGIN DIPISAH
-  function loginPi() {
+  function loginPi() { // [KUNCI] AUTH CUMA JALAN PAS DIKLIK
     Pi.authenticate(['username', 'payments'], onIncompletePaymentFound)
-    .then(onReadyForServerAuth)
-    .catch(onError);
+   .then(onReadyForServerAuth)
+   .catch(onError);
   }
 
   function onReadyForServerAuth(authResult) {
     currentUser = authResult.user;
     document.getElementById('pi-login-btn').innerText = '@' + currentUser.username;
-    document.getElementById('pi-login-btn').disabled = true; // Biar gak bisa klik lagi
+    document.getElementById('pi-login-btn').disabled = true;
   }
 
   function bayarPost() {
-    if(!currentUser) return alert('Login Pi dulu bro'); // Ini yg muncul di SS lu
-
+    if(!currentUser) return alert('Login Pi dulu bro');
     const paymentData = { amount: 0.1, memo: "Post MyTrack Testnet", metadata: { app: "MyTrack", user: currentUser.username } };
-
     Pi.createPayment(paymentData, {
-      onReadyForServerApproval: (paymentId) => { fetch(API_URL + '/payments/approve', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ paymentId }) }); },
-      onReadyForServerCompletion: (paymentId, txid) => { fetch(API_URL + '/payments/complete', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ paymentId, txid }) }).then(res => { if(res.ok) showPage('post'); else alert('Gagal verifikasi server'); }); },
+      onReadyForServerApproval: (paymentId) => { console.log('Approve:', paymentId); },
+      onReadyForServerCompletion: (paymentId, txid) => { console.log('Complete:', paymentId); showPage('post'); },
       onCancel: (paymentId) => { alert('Batal bayar') },
       onError: (error, payment) => { alert('Error: ' + error) },
     });
   }
-
   function onIncompletePaymentFound(payment) {}
   function onError(error, payment) { alert('Auth Error: ' + error); }
 
@@ -94,6 +84,5 @@
   function showPage(pageId) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.getElementById(pageId).classList.add('active'); window.scrollTo(0,0); }
   function showPost(id) { const p = DUMMY_POSTS[id]; document.getElementById('review-content').innerHTML = `<h2>${p.user}</h2><p>${p.desc}</p><img src="${p.post}" style="width: 100%; border-radius: 12px;">`; showPage('review'); }
 </script>
-
 </body>
   </html>
