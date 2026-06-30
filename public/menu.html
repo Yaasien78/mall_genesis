@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feed - MyTrack</title>
+  <style>
+    body { margin:0; font-family:sans-serif; color:white; overflow-x:hidden; }
+   .spaceBg { background: linear-gradient(180deg, #0a192f 0%, #1e3a5f 50%, #4a7bb7 100%); min-height: 100vh; position: relative; }
+   .stars { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: radial-gradient(white 1px, transparent 1px); background-size: 50px 50px; animation: starsMove 10s linear infinite; z-index: 0; opacity: 0.4; }
+   .page { position: relative; z-index: 1; display: none; padding: 10px; }.page.active { display: block; }
+   .back-btn { background: none; border: none; color: white; font-size: 20px; margin-bottom: 10px; cursor: pointer; }
+   .ticker { width: 100%; height: 40px; background: #001f3f; color: white; border-top: 2px solid gold; border-bottom: 2px solid gold; overflow: hidden; white-space: nowrap; display: flex; align-items: center; font-weight: bold; }
+   .ticker span { display: inline-block; padding-left: 100%; animation: ticker 20s linear infinite; }
+   .card { background: rgba(26, 26, 46, 0.8); backdrop-filter: blur(5px); margin-bottom: 15px; border-radius: 12px; padding: 10px; cursor: pointer; border: 1px solid rgba(255,215,0,0.3); }
+   .footer { position: fixed; bottom: 0; left:0; width: 100%; height: 60px; background: #001f3f; border-top: 2px solid gold; display: flex; align-items: center; justify-content: space-around; z-index: 2; }
+   .btn-gold { background: gold; color: black; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    #pi-login-btn { background: #fff; color: #5a2d82; border: none; padding: 8px 16px; border-radius: 8px; font-weight: bold; }
+    @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+    @keyframes starsMove { 0% { background-position: 0 0; } 100% { background-position: 0 1000px; } }
+  </style>
+</head>
+<body>
+
+<div class="spaceBg">
+  <div class="stars"></div>
+
+  <div id="feed" class="page active">
+    <div class="ticker"><span>TESTNET MODE | My Track 2026</span></div>
+    <div style="padding-bottom: 80px;">
+      <div class="card" onclick="showPost(1)">
+        <b style="color: #FFD700;">@yaasien</b><p>Logo My Track V2</p>
+        <img src="https://placehold.co/400x400/0f0f1a/FFD700?text=LOGO" style="width: 100%; border-radius: 8px;">
+      </div>
+    </div>
+    <div class="footer">
+      <div id="pi-login-btn">Login Pi...</div>
+      <button class="btn-gold" onclick="bayarPost()">Post + 0.1π</button>
+    </div>
+  </div>
+
+  <div id="review" class="page" style="padding-bottom: 80px;">
+    <button class="back-btn" onclick="showPage('feed')">← Back</button>
+    <div id="review-content"></div>
+  </div>
+
+  <div id="post" class="page">
+    <button class="back-btn" onclick="showPage('feed')">← Back</button>
+    <h2>✅ Post Berhasil!</h2>
+    <p>Makasih udah bayar 0.1 Test-Pi</p>
+  </div>
+
+</div>
+
+<script src="https://sdk.minepi.com/pi-sdk.js"></script>
+<script>
+  Pi.init({ version: "2.0", sandbox: true }); // TESTNET
+
+  let currentUser = null;
+  const API_URL = 'https://api.mytrack.app'; // [GANTI] URL backend lu di repo app
+
+  function onReadyForServerAuth(authResult) {
+    currentUser = authResult.user;
+    document.getElementById('pi-login-btn').innerText = '@' + currentUser.username;
+  }
+
+  function bayarPost() {
+    if(!currentUser) return alert('Login Pi dulu bro');
+
+    const paymentData = {
+      amount: 0.1,
+      memo: "Post MyTrack Testnet",
+      metadata: { app: "MyTrack", user: currentUser.username }
+    };
+
+    Pi.createPayment(paymentData, {
+      // [KUNCI] Kirim ke backend lu buat approve
+      onReadyForServerApproval: (paymentId) => {
+        fetch(API_URL + '/payments/approve', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ paymentId })
+        });
+      },
+      // [KUNCI] Kirim ke backend lu buat complete
+      onReadyForServerCompletion: (paymentId, txid) => {
+        fetch(API_URL + '/payments/complete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ paymentId, txid })
+        }).then(res => {
+          if(res.ok) showPage('post'); // Sukses baru pindah halaman
+          else alert('Gagal verifikasi server');
+        });
+      },
+      onCancel: (paymentId) => { alert('Batal bayar') },
+      onError: (error, payment) => { alert('Error: ' + error) },
+    });
+  }
+
+  function onIncompletePaymentFound(payment) {}
+  function onError(error, payment) { alert(error); }
+
+  Pi.authenticate(['username', 'payments'], onIncompletePaymentFound).then(onReadyForServerAuth).catch(onError);
+
+  const DUMMY_POSTS = {
+    1: {user: '@yaasien', desc: 'Logo My Track V2', post: 'https://placehold.co/400x400/0f0f1a/FFD700?text=LOGO'}
+  };
+
+  function showPage(pageId) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(pageId).classList.add('active');
+    window.scrollTo(0,0);
+  }
+
+  function showPost(id) {
+    const p = DUMMY_POSTS[id];
+    document.getElementById('review-content').innerHTML = `
+      <h2>${p.user}</h2>
+      <p>${p.desc}</p>
+      <img src="${p.post}" style="width: 100%; border-radius: 12px;">
+    `;
+    showPage('review');
+  }
+</script>
+
+</body>
+</html>
