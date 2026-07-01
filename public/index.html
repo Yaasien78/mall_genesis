@@ -18,8 +18,8 @@
   <p id="status">Loading Pi SDK...</p>
 
 <script>
-  // WAJIB: sandbox true karena status lu "Testnet App T"
-  Pi.init({ version: "2.0", sandbox: true }); 
+  // WAJIB: sandbox false karena status lu "mainet App M"
+  Pi.init({ version: "2.0", sandbox: false }); 
 
   Pi.onReady(async function() { 
     document.getElementById('status').textContent = 'Cek Login...';
