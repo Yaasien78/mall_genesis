@@ -4,64 +4,73 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Track</title>
-  
-  <!-- 1. PI SDK WAJIB PALING ATAS -->
-  <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+  <script src="https://sdk.minepi.com/pi-sdk.js"></script> <!-- SDK Tetep wajib -->
   <script src="https://cdn.tailwindcss.com"></script>
-  
-  <style>
-    body { background-color: #1a0033; } /* Ungu gelap kayak SS lu */
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style> 
+    body { background-color: #1a0033; } /* Ungu gelap */
+    .border-gold-2 { border-width: 2px; border-color: #fbbf24; } /* Garis 2px Emas */
+    .bg-dongker { background-color: #0f1a2e; } /* Biru Dongker Head/Foot */
   </style>
 </head>
-<body class="text-yellow-400 flex items-center justify-center min-h-screen font-bold">
-  
-  <div id="app" class="text-center">
-    <h1 class="text-5xl mb-6" style="text-shadow: 2px 2px 4px #000;">My Track</h1>
-    
-    <!-- Loading Dulu -->
-    <div id="loading">
-      <div class="w-16 h-16 border-4 border-yellow-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-      <p class="text-xl">Loading Pi SDK...</p>
+<body class="text-white flex-col min-h-screen">
+
+  <!-- HEAD BIRU DONGKER -->
+  <header class="bg-dongker p-3 border-b-2 border-gold-2 flex items-center justify-between">
+    <div class="flex items-center">
+      <span class="text-3xl mr-3 text-yellow-400">≡</span>
+      <h1 class="text-3xl font-bold text-yellow-400" style="text-shadow: 2px 2px 4px #000;">My Track</h1>
+    </div>
+    <span id="namaUser" class="text-sm text-yellow-400">...</span>
+  </header>
+
+  <main class="p-4 flex-1">
+    <!-- CARD HARGA SAMA KAYA SS LU -->
+    <div class="bg-purple-900 border-gold-2 rounded-2xl p-4 text-center mb-4">
+      <h2 class="text-xl">Harga Pi/USD Live</h2>
+      <p id="hargaUSD" class="text-5xl font-bold text-yellow-400 my-2">$0.1150</p>
+      <p id="hargaIDR" class="text-xl text-yellow-400">Harga /pi = Rp 2.063</p>
+      <p id="persen" class="text-2xl text-green-400">0.94%</p>
+      <p class="text-sm text-purple-300 mt-2">Kurs: 1 USD = Rp 17934.50 | Update <span id="jam"></span></p>
     </div>
 
-    <!-- Tombol Login, disembunyiin dulu -->
-    <button id="loginBtn" class="hidden bg-purple-600 hover:bg-purple-700 p-4 rounded-xl text-xl text-white">
-      Login with Pi
-    </button>
-  </div>
+    <!-- GRAFIK GARIS EMAS 2PX -->
+    <div class="bg-purple-900 border-gold-2 rounded-2xl p-4">
+      <canvas id="priceChart"></canvas>
+    </div>
+  </main>
+
+  <!-- FOOT BIRU DONGKER -->
+  <footer class="bg-dongker p-3 border-t-2 border-gold-2 text-center text-yellow-400">
+    My Track v1.0
+  </footer>
 
   <script>
-    // TUNGGU SDK BENERAN KELOAD
-    window.addEventListener('load', async () => {
-      
-      if (typeof Pi === 'undefined') {
-        document.getElementById('loading').innerHTML = `<p class="text-red-500">Gagal load SDK. Buka pakai Pi Browser ya!</p>`;
-        return;
-      }
+    // 1. INIT PI SDK LANGSUNG TANPA TOMBOL
+    Pi.init({ version: "2.0", sandbox: false });
 
-      // 2. INIT SDK - GANTI "mytrack" SAMA APP ID LU
-      Pi.init({ app: "mytrack", version: "2.0", sandbox: false }); // FALSE = LIVE
-
-      // Kalo SDK udah siap, sembunyiin loading, munculin tombol
-      document.getElementById('loading').classList.add('hidden');
-      document.getElementById('loginBtn').classList.remove('hidden');
-
-      // 3. LOGIC LOGIN
-      document.getElementById('loginBtn').onclick = async () => {
-        try {
-          const scopes = ['username', 'payments', 'wallet_address'];
-          const auth = await Pi.authenticate(scopes, (payment) => {});
-          
-          // Kalo berhasil login
-          document.getElementById('app').innerHTML = `
-            <h1 class="text-3xl mb-2">Halo, ${auth.user.username} ✅</h1>
-            <p class="text-sm break-all">Wallet: ${auth.user.wallet_address}</p>
-          `;
-        } catch (err) {
-          alert('Gagal login: ' + err);
-        }
-      };
+    // 2. AUTO AMBIL USER DARI PI BROWSER
+    Pi.authenticate(['username']).then(auth => {
+      document.getElementById('namaUser').innerText = auth.user.username;
+    }).catch(() => {
+      document.getElementById('namaUser').innerText = 'Tamu';
     });
+
+    // 3. CHART GARIS EMAS 2PX
+    const ctx = document.getElementById('priceChart');
+    new Chart(ctx, {
+      type: 'line',
+      data: { labels: ['','','',''],
+        datasets: [{ data: [0.1145, 0.1152, 0.1160, 0.1155, 0.1168, 0.1150],
+          borderColor: '#fbbf24', borderWidth: 2, // 2PX EMAS
+          backgroundColor: 'rgba(251, 191, 36, 0.2)',
+          fill: true, tension: 0.4, pointRadius: 0
+      }]},
+      options: { scales: { y: { ticks: { color: 'white' } }, x: { display: false } }, plugins: { legend: { display: false } }
+    });
+
+    // 4. JAM UPDATE
+    document.getElementById('jam').innerText = new Date().toLocaleTimeString('id-ID');
   </script>
 </body>
 </html>
