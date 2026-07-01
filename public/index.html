@@ -7,113 +7,132 @@
   <script src="https://sdk.minepi.com/pi-sdk.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style> 
+  <style>
     body { background-color: #ffffff; overflow: hidden; } /* BODY PUTIH */
-    .border-gold-2-tb { border-top: 2px solid #fbbf24; border-bottom: 2px solid #fbbf24; } 
-    .border-gold-2 { border: 2px solid #fbbf24; } 
-    .bg-dongker { background-color: #0f1a2e; } 
-    .bg-ungu { background-color: #6d28d9; } 
-    @keyframes glow { 0%, 100% { box-shadow: 0 0 5px #fbbf24; } 50% { box-shadow: 0 0 15px #fbbf24; } }
-    .animate-glow { animation: glow 2s infinite; }
+   .border-gold-2 { border: 2px solid #fbbf24; } /* GARIS EMAS 2PX */
+   .bg-dongker { background-color: #0f1a2e; } /* BIRU DONGKER SS */
+   .bg-ungu { background-color: #6d28d9; } /* UNGU KOTAK SS */
   </style>
 </head>
-<body class="text-white flex justify-center items-center h-screen font-sans">
+<body class="font-sans flex justify-center items-center h-screen">
 
-  <!-- WRAPPER UNGU FULL NUTUPIN BODY PUTIH -->
-  <div class="w-full h-screen flex-col bg-ungu"> <!-- GAK PAKE MAX-W-SM BIAR FULL -->
+  <!-- KOTAK UNGU FULL -->
+  <div class="w-full h-screen flex-col bg-ungu">
 
-    <!-- HEAD BIRU DONGKER -->
-    <header class="bg-dongker p-3 border-gold-2-tb flex items-center justify-between flex-shrink-0">
-      <a href="ads.html" class="text-3xl text-yellow-400">≡</a> 
-      <h1 class="text-2xl font-extrabold text-yellow-400 tracking-wide drop-shadow-lg">My Track</h1>
+    <!-- HEAD BIRU DONGKER: MENU | MY TRACK PUTIH | LOGO PI -->
+    <header class="bg-dongker p-3 border-b-2 border-yellow-400 flex items-center justify-between flex-shrink-0">
+      <button class="text-3xl text-yellow-400">≡</button>
+      <h1 class="text-2xl font-extrabold text-white tracking-wide">My Track</h1> <!-- PUTIH TENGAH -->
       <img src="https://minepi.com/favicon.ico" alt="Pi" class="w-8 h-8 rounded-full border-2 border-yellow-400">
     </header>
 
     <main class="p-3 flex-1 flex-col gap-3">
-      <!-- CARD HARGA -->
-      <div class="bg-ungu border-gold-2 rounded-2xl p-3 text-center animate-glow">
+
+      <!-- KOTAK HARGA UNGU BORDER EMAS 2PX -->
+      <div class="bg-ungu border-gold-2 rounded-2xl p-3 text-center">
         <h2 class="text-lg text-white">Harga Pi/USD Live</h2>
         <p id="hargaUSD" class="text-5xl font-extrabold text-yellow-400 my-1">$0.1150</p>
         <p id="hargaIDR" class="text-xl text-yellow-400">Harga /pi = Rp 2.063</p>
-        <p id="persen" class="text-2xl font-bold text-green-400">0.94%</p>
+        <p id="persen" class="text-2xl font-bold">0.94%</p> <!-- AUTO WARNA -->
         <p class="text-xs text-purple-200 mt-1">Kurs: 1 USD = Rp 17934.50 | Update <span id="jam"></span></p>
       </div>
 
-      <!-- CHART -->
-      <div class="bg-ungu border-gold-2 rounded-2xl p-2 flex-1 min-h-0 animate-glow">
-        <canvas id="priceChart"></canvas>
+      <!-- KOTAK CHART UNGU BORDER EMAS 2PX -->
+      <div class="bg-ungu border-gold-2 rounded-2xl p-2 flex-1 min-h-0">
+        <canvas id="priceChart"></canvas> <!-- CHART HIDUP COINGECKO -->
       </div>
     </main>
 
-    <!-- FOOT BISA KLIK -->
-    <footer class="bg-dongker p-0 border-gold-2-tb text-center flex-shrink-0 mt-auto">
-      <button id="btnLogin" class="w-full p-2 text-xl font-bold text-yellow-400 active:bg-yellow-600 rounded-b-2xl">
-        Loading...
-      </button> 
+    <!-- FOOT BIRU DONGKER: TULISAN EMAS AJA GAK ADA KOTAK -->
+    <footer class="bg-dongker p-3 border-t-2 border-yellow-400 text-center flex-shrink-0 mt-auto">
+      <p id="btnLogin" class="text-xl font-bold text-yellow-400">Loading...</p> <!-- EMAS AJA -->
     </footer>
 
   </div>
 
   <script>
-    let isLoggedIn = false;
-    const btnLogin = document.getElementById('btnLogin');
-
+    // 1. AUTO LOGIN PI BROWSER
+    let username = 'Guest';
     Pi.init({ version: "2.0", sandbox: false });
     Pi.authenticate(['username']).then(auth => {
-      isLoggedIn = true;
-      btnLogin.innerText = `Welcome ${auth.user.username}`;
-      btnLogin.classList.remove('bg-yellow-500', 'text-black');
+      username = auth.user.username;
+      document.getElementById('btnLogin').innerText = `Welcome ${username}`; // EMAS
     }).catch(() => {
-      isLoggedIn = false;
-      btnLogin.innerText = 'Login Pi';
-      btnLogin.classList.add('bg-yellow-500', 'text-black', 'rounded-lg', 'm-2');
+      document.getElementById('btnLogin').innerText = 'Login Pi'; // EMAS
     });
 
-    btnLogin.onclick = () => {
-      if (isLoggedIn) {
-        alert('Peringatan: Anda sudah login otomatis di Pi Browser ✅');
-      } else {
-        alert('Silahkan buka aplikasi ini dari Pi Browser untuk Login Otomatis ⚠️');
+    // 2. AMBIL DATA LIVE DARI COINGECKO BIAR CHART HIDUP
+    async function fetchPiData() {
+      try {
+        const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=pi-network&vs_currencies=usd,idr&include_24hr_change=true');
+        const data = await res.json();
+        const pi = data['pi-network'];
+
+        let hargaUSD = pi.usd;
+        let hargaIDR = pi.idr;
+        let persen = pi.usd_24h_change;
+
+        document.getElementById('hargaUSD').innerText = `$${hargaUSD.toFixed(4)}`;
+        document.getElementById('hargaIDR').innerText = `Harga /pi = Rp ${hargaIDR.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`;
+
+        const persenEl = document.getElementById('persen');
+        persenEl.innerText = `${persen.toFixed(2)}%`;
+        if (persen >= 0) {
+          persenEl.classList.add('text-green-400'); // HIJAU
+          persenEl.innerText = `+${persen.toFixed(2)}%`;
+        } else {
+          persenEl.classList.add('text-red-500'); // MERAH
+        }
+
+        return { hargaUSD, hargaIDR, persen };
+      } catch (e) {
+        console.error(e);
+        return { hargaUSD: 0.1150, hargaIDR: 2063, persen: 0.94 }; // DATA DUMMY KALO GAGAL
       }
     }
 
-    // DATA HARGA + % WARNA
-    let hargaSekarang = 0.1150;
-    let hargaKemarin = 0.1139; 
-    let persen = ((hargaSekarang - hargaKemarin) / hargaKemarin * 100).toFixed(2);
-    const persenEl = document.getElementById('persen');
-    if (persen >= 0) { persenEl.innerText = `+${persen}%`; } 
-    else { persenEl.classList.remove('text-green-400'); persenEl.classList.add('text-red-500'); }
+    // 3. CHART HIDUP WARNA PUTIH DARI DATA COINGECKO 7 HARI
+    async function drawChart() {
+      const res = await fetch('https://api.coingecko.com/api/v3/coins/pi-network/market_chart?vs_currency=usd&days=7');
+      const data = await res.json();
+      const prices = data.prices.map(p => p[1]); // Ambil harga doang
 
-    // CHART SKALA KIRI
-    const ctx = document.getElementById('priceChart');
-    const gradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 200);
-    gradient.addColorStop(0, 'rgba(251, 191, 36, 0.3)');
-    gradient.addColorStop(1, 'rgba(251, 191, 36, 0.0)');
+      const ctx = document.getElementById('priceChart');
+      const gradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 200);
+      gradient.addColorStop(0, 'rgba(255, 255, 255, 0.2)');
+      gradient.addColorStop(1, 'rgba(255, 255, 255, 0.0)');
 
-    new Chart(ctx, {
-      type: 'line',
-      data: { labels: ['','','',''],
-        datasets: [{ 
-          data: [0.1220, 0.1215, 0.1210, 0.1205, 0.1190, 0.1180, 0.1170, 0.1175, 0.1185],
-          borderColor: '#fbbf24', 
-          borderWidth: 2, 
-          backgroundColor: gradient,
-          fill: true, 
-          tension: 0.2,
-          pointRadius: 0
-      }]},
-      options: { 
-        maintainAspectRatio: false,
-        scales: { 
-          y: { display: true, ticks: { color: 'white', callback: (val) => val.toFixed(4).replace('.', ',') }, grid: { color: 'rgba(255,255,255,0.1)' } }, 
-          x: { display: false } 
-        }, 
-        plugins: { legend: { display: false } }
-      }
-    });
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: prices.map(() => ''), // Gak pake label bawah
+          datasets: [{
+            data: prices.slice(-20), // Ambil 20 data terakhir biar gerigi
+            borderColor: '#ffffff', // GARIS PUTIH
+            borderWidth: 2,
+            backgroundColor: gradient,
+            fill: true,
+            tension: 0.2,
+            pointRadius: 0
+        }]},
+        options: {
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              display: true,
+              ticks: { color: 'white', callback: (val) => val.toFixed(4).replace('.', ',') }, // SKALA PUTIH KIRI
+              grid: { color: 'rgba(255,255,255,0.1)' }
+            },
+            x: { display: false }
+          },
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
 
+    fetchPiData();
+    drawChart();
     document.getElementById('jam').innerText = new Date().toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'});
   </script>
 </body>
-</html>
+  </html>
