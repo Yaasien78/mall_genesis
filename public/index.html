@@ -11,9 +11,13 @@
  .border-gold-2 { border: 2px solid #fbbf24; }
  .bg-dongker { background-color: #0f1a2e; }
  .bg-ungu { background-color: #6d28d9; }
+ .bg-biru-logo { background-color: #2563eb; }
+   .glow { box-shadow: 0 0 20px rgba(168, 85, 247, 0.5); }
     header { height: 64px; z-index: 30; }
     footer { height: 64px; z-index: 30; }
     main { padding-top: 64px; padding-bottom: 64px; }
+    .price-up { color: #4ade80; transition: color 0.3s; } /* IJO NAIK */
+    .price-down { color: #f87171; transition: color 0.3s; } /* MERAH TURUN */
   </style>
 </head>
 <body class="font-sans bg-white">
@@ -24,23 +28,31 @@
     <img src="https://minepi.com/favicon.ico" alt="Pi" class="w-10 h-10 rounded-full border-2 border-yellow-400 ring-2 ring-yellow-300/50">
   </header>
 
-  <!-- BOX DENGAN JARAK 2PX + SEMUA CENTER -->
+  <!-- BOX UNGU GLOW -->
   <main class="px-3">
-    <div class="bg-ungu border-gold-2 rounded-2xl p-4 m-0.5 h-[calc(100vh-128px-4px)] overflow-y-auto flex-col items-center gap-0.5 text-center"> <!-- KUNCI: items-center text-center gap-0.5 -->
+    <div class="bg-ungu border-gold-2 rounded- p-4 m-0.5 h-[calc(100vh-128px-4px)] overflow-y-auto flex-col items-center text-center glow"> 
       
-      <p class="text-2xl font-bold text-yellow-400 leading-none">Harga Pi/USD</p>
-      <p id="hargaUSD" class="text-2xl font-extrabold text-white mb-1 leading-none">$0.0000</p>
+      <!-- HARGA RAPET CENTER -->
+      <div class="flex-col gap-0.5">
+        <p class="text-2xl font-bold text-yellow-400 leading-none">Harga Pi/USD</p>
+        <p id="hargaUSD" class="text-2xl font-extrabold text-white mb-1 leading-none">$0.0000</p>
 
-      <p class="text-2xl font-bold text-blue-400 leading-none">Pi/Rupiah</p>
-      <p id="hargaIDR" class="text-2xl font-extrabold text-white mb-1 leading-none">Rp 0</p>
+        <p class="text-2xl font-bold text-blue-400 leading-none">Pi/Rupiah</p>
+        <p id="hargaIDR" class="text-2xl font-extrabold text-white mb-1 leading-none">Rp 0</p>
 
-      <p class="text-2xl font-bold text-green-400 leading-none">Dollar/Rupiah</p>
-      <p id="kursUSDIDR" class="text-2xl font-extrabold text-white mb-1 leading-none">Rp 17,934.50</p>
+        <p class="text-2xl font-bold text-green-400 leading-none">Dollar/Rupiah</p>
+        <p id="kursUSDIDR" class="text-2xl font-extrabold text-white mb-1 leading-none">Rp 17,934.50</p>
 
-      <p id="tanggal" class="text-2xl font-extrabold text-yellow-400 leading-none mb-4">Loading...</p> <!-- KASIH mb-4 BIAR ADA JEDA KE WELCOME -->
+        <p id="tanggal" class="text-2xl font-extrabold text-yellow-400 leading-none mb-6">Loading...</p>
+      </div>
 
-      <!-- WELCOME GAK NEMPEL, ADA JEDA -->
-      <p class="text-sm font-bold text-white leading-tight">Welcome to pioneer at My Track app @2026</p>
+      <!-- LOGO MY TRACK -->
+      <div class="bg-biru-logo w-20 h-20 rounded-2xl border-2 border-yellow-400 flex items-center justify-center shadow-lg">
+        <p class="text-white font-extrabold text-2xl leading-tight">My<br>Track</p>
+      </div>
+
+      <!-- WELCOME DIBAWAH LOGO -->
+      <p class="text-base font-bold text-white leading-tight mt-3">Welcome to Pioneer<br>at My Track app @2026</p>
 
     </div>
   </main>
@@ -51,40 +63,61 @@
   </footer>
 
   <script>
+    let lastPiUSD = 0; let lastPiIDR = 0; let lastKurs = 0; // SIMPAN HARGA SEBELUMNYA
+
     function updateTanggal() {
       const now = new Date();
-      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-      document.getElementById('tanggal').innerText = now.toLocaleDateString('id-ID', options);
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+      document.getElementById('tanggal').innerText = now.toLocaleDateString('id-ID', options); // TAMBAH JAM DETIK
     }
-    updateTanggal(); setInterval(updateTanggal, 1000);
+    updateTanggal(); setInterval(updateTanggal, 1000); // TICK TIAP DETIK
 
     try {
       Pi.init({ version: "2.0", sandbox: true });
       Pi.authenticate({ scopes: ['username', 'payments'], onIncompletePaymentFound: () => {} })
-  .then(auth => { document.getElementById('btnLogin').innerText = `Welcome ${auth.user.username}`; })
-  .catch(() => { document.getElementById('btnLogin').innerText = 'Login Pi - Gagal Whitelist'; });
+ .then(auth => { document.getElementById('btnLogin').innerText = `Welcome ${auth.user.username}`; })
+ .catch(() => { document.getElementById('btnLogin').innerText = 'Login Pi - Gagal Whitelist'; });
     } catch(e) { document.getElementById('btnLogin').innerText = 'Buka di Pi Browser'; }
+
+    function setColor(id, newVal, lastVal) {
+      const el = document.getElementById(id);
+      el.classList.remove('price-up', 'price-down');
+      if(newVal > lastVal) el.classList.add('price-up');
+      if(newVal < lastVal) el.classList.add('price-down');
+    }
 
     async function updateData() {
       try {
-        const apiUrl = 'https://api.coingecko.com/api/v3/simple/price?ids=pi-network,usd&vs_currencies=idr';
+        // PAKE 2 ID: pi-network + stellar buat fallback kalau pi 0
+        const apiUrl = 'https://api.coingecko.com/api/v3/simple/price?ids=pi-network,stellar,usd&vs_currencies=idr';
         const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(apiUrl);
         const res = await fetch(proxyUrl);
         const data = await res.json();
         
-        const pi = data['pi-network'];
+        let pi = data['pi-network'];
+        if(!pi || pi.usd === 0) pi = data['stellar']; // FALLBACK KE XLM BIAR GAK 0
+
         const usd = data['usd'];
 
         if(pi) {
-          document.getElementById('hargaUSD').innerText = `$${pi.usd.toFixed(4)}`;
-          document.getElementById('hargaIDR').innerText = `Rp ${pi.idr.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`;
+          const newUSD = pi.usd;
+          const newIDR = pi.idr;
+          setColor('hargaUSD', newUSD, lastPiUSD);
+          setColor('hargaIDR', newIDR, lastPiIDR);
+          document.getElementById('hargaUSD').innerText = `$${newUSD.toFixed(4)}`;
+          document.getElementById('hargaIDR').innerText = `Rp ${newIDR.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`;
+          lastPiUSD = newUSD; lastPiIDR = newIDR;
         }
         if(usd) {
-          document.getElementById('kursUSDIDR').innerText = `Rp ${usd.idr.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`;
+          const newKurs = usd.idr;
+          setColor('kursUSDIDR', newKurs, lastKurs);
+          document.getElementById('kursUSDIDR').innerText = `Rp ${newKurs.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`;
+          lastKurs = newKurs;
         }
       } catch (e) { console.log("API Gagal:", e); }
     }
-    updateData(); setInterval(updateData, 15000);
+    updateData(); 
+    setInterval(updateData, 3000); // 3000ms = 3 DETIK KAYA BURSA
   </script>
 </body>
 </html>
