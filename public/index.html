@@ -2,75 +2,85 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
   <title>My Track</title>
-  <script src="https://sdk.minepi.com/pi-sdk.js"></script> <!-- SDK Tetep wajib -->
+  <script src="https://sdk.minepi.com/pi-sdk.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style> 
-    body { background-color: #1a0033; } /* Ungu gelap */
-    .border-gold-2 { border-width: 2px; border-color: #fbbf24; } /* Garis 2px Emas */
-    .bg-dongker { background-color: #0f1a2e; } /* Biru Dongker Head/Foot */
+    body { 
+      background-color: #2e1a4d; 
+      background-image: linear-gradient(rgba(173, 216, 230, 0.1), rgba(173, 216, 230, 0.1)); 
+      overflow: hidden; /* Biar gak bisa di scroll */
+    } 
+    .border-gold-2 { border: 2px solid #fbbf24; } 
+    .bg-dongker { background-color: #0f1a2e; } 
   </style>
 </head>
-<body class="text-white flex-col min-h-screen">
+<body class="text-white flex justify-center items-center h-screen">
 
-  <!-- HEAD BIRU DONGKER -->
-  <header class="bg-dongker p-3 border-b-2 border-gold-2 flex items-center justify-between">
-    <div class="flex items-center">
-      <span class="text-3xl mr-3 text-yellow-400">≡</span>
-      <h1 class="text-3xl font-bold text-yellow-400" style="text-shadow: 2px 2px 4px #000;">My Track</h1>
-    </div>
-    <span id="namaUser" class="text-sm text-yellow-400">...</span>
-  </header>
+  <!-- WRAPPER PAS LAYAR HP. MAX 400px -->
+  <div class="w-full max-w-sm h-screen flex-col bg-[#2e1a4d]">
 
-  <main class="p-4 flex-1">
-    <!-- CARD HARGA SAMA KAYA SS LU -->
-    <div class="bg-purple-900 border-gold-2 rounded-2xl p-4 text-center mb-4">
-      <h2 class="text-xl">Harga Pi/USD Live</h2>
-      <p id="hargaUSD" class="text-5xl font-bold text-yellow-400 my-2">$0.1150</p>
-      <p id="hargaIDR" class="text-xl text-yellow-400">Harga /pi = Rp 2.063</p>
-      <p id="persen" class="text-2xl text-green-400">0.94%</p>
-      <p class="text-sm text-purple-300 mt-2">Kurs: 1 USD = Rp 17934.50 | Update <span id="jam"></span></p>
-    </div>
+    <!-- HEAD BIRU DONGKER 2PX PADDING KECIL -->
+    <header class="bg-dongker p-2 border-gold-2 flex items-center justify-center flex-shrink-0">
+      <h1 class="text-2xl font-bold text-black bg-yellow-400 px-3 py-0.5 rounded-md">My Track</h1>
+    </header>
 
-    <!-- GRAFIK GARIS EMAS 2PX -->
-    <div class="bg-purple-900 border-gold-2 rounded-2xl p-4">
-      <canvas id="priceChart"></canvas>
-    </div>
-  </main>
+    <!-- MAIN AUTO NGEPAS -->
+    <main class="p-3 flex-1 flex-col gap-3">
+      
+      <!-- CARD HARGA PADDING KECIL -->
+      <div class="bg-purple-800 border-gold-2 rounded-xl p-3 text-center">
+        <h2 class="text-lg text-white">Harga Pi/USD Live</h2>
+        <p id="hargaUSD" class="text-5xl font-extrabold text-yellow-400 my-1">$0.1150</p>
+        <p id="hargaIDR" class="text-xl text-yellow-400">Harga /pi = Rp 2.063</p>
+        <p id="persen" class="text-2xl text-green-400 font-bold">0.94%</p>
+        <p class="text-xs text-purple-300 mt-1">Kurs: 1 USD = Rp 17934.50 | Update <span id="jam"></span></p>
+      </div>
 
-  <!-- FOOT BIRU DONGKER -->
-  <footer class="bg-dongker p-3 border-t-2 border-gold-2 text-center text-yellow-400">
-    My Track v1.0
-  </footer>
+      <!-- GRAFIK TINGGI PAS. GAK KE PANJANGAN -->
+      <div class="bg-purple-800 border-gold-2 rounded-xl p-2 flex-1 min-h-0">
+        <canvas id="priceChart"></canvas>
+      </div>
+    </main>
+
+    <!-- FOOT BIRU DONGKER 2PX PADDING KECIL -->
+    <footer class="bg-dongker p-2 border-gold-2 text-center flex-shrink-0">
+      <p class="text-lg font-bold text-yellow-400">Welcome <span id="namaUser">Yaasien</span></p>
+    </footer>
+
+  </div>
 
   <script>
-    // 1. INIT PI SDK LANGSUNG TANPA TOMBOL
     Pi.init({ version: "2.0", sandbox: false });
-
-    // 2. AUTO AMBIL USER DARI PI BROWSER
     Pi.authenticate(['username']).then(auth => {
       document.getElementById('namaUser').innerText = auth.user.username;
     }).catch(() => {
-      document.getElementById('namaUser').innerText = 'Tamu';
+      document.getElementById('namaUser').innerText = 'Yaasien';
     });
 
-    // 3. CHART GARIS EMAS 2PX
     const ctx = document.getElementById('priceChart');
     new Chart(ctx, {
       type: 'line',
       data: { labels: ['','','',''],
-        datasets: [{ data: [0.1145, 0.1152, 0.1160, 0.1155, 0.1168, 0.1150],
-          borderColor: '#fbbf24', borderWidth: 2, // 2PX EMAS
+        datasets: [{ 
+          data: [0.1140, 0.1148, 0.1155, 0.1150, 0.1160, 0.1150],
+          borderColor: '#fbbf24', 
+          borderWidth: 2, 
           backgroundColor: 'rgba(251, 191, 36, 0.2)',
-          fill: true, tension: 0.4, pointRadius: 0
+          fill: true, 
+          tension: 0.4, 
+          pointRadius: 0 
       }]},
-      options: { scales: { y: { ticks: { color: 'white' } }, x: { display: false } }, plugins: { legend: { display: false } }
+      options: { 
+        maintainAspectRatio: false, // WAJIB BIAR PAS DI BOX
+        scales: { y: { display: false }, x: { display: false } }, 
+        plugins: { legend: { display: false }
+      }
     });
 
-    // 4. JAM UPDATE
-    document.getElementById('jam').innerText = new Date().toLocaleTimeString('id-ID');
+    document.getElementById('jam').innerText = new Date().toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'});
   </script>
 </body>
 </html>
