@@ -62,12 +62,12 @@
           <p id="kursUSDIDR" class="text-ss text-white">Loading...</p>
         </div>
 
-        <!-- KUNCI: w-12 h-12 text-base + mt-1 = Turun 4px plek garis emas -->
-        <div class="text-center flex-1 flex-col justify-end mb-1">
-          <div class="w-12 h-12 rounded-xl border-kuning ring-2 mx-auto bg-blue-500 flex items-center justify-center">
-            <p class="text-base text-ss-kecil text-white" style="line-height:1;">My<br>Track</p>
+        <!-- KUNCI: w-14 h-14 text-lg + mt-0.5 + mb-0 = MEPET GARIS EMAS -->
+        <div class="text-center flex-1 flex-col justify-end mb-0">
+          <div class="w-14 h-14 rounded-xl border-kuning ring-2 mx-auto bg-blue-500 flex items-center justify-center">
+            <p class="text-lg text-ss-kecil text-white" style="line-height:1;">My<br>Track</p>
           </div>
-          <p class="text-sm text-ss-kecil text-white mt-1 mb-0 leading-tight">
+          <p class="text-sm text-ss-kecil text-white mt-0.5 mb-0 leading-tight">
             Welcome to Pioneer<br>
             At My Track App<br>
             @2026
@@ -116,7 +116,7 @@
           document.getElementById('kursUSDIDR').innerText = `Rp ${kurs.toLocaleString('id-ID', {minimumFractionDigits: 2})}`;
         }
       } catch (e) {
-        document.getElementById('kursUSDIDR').innerText = 'Error'; // Plek SS 13.01
+        document.getElementById('kursUSDIDR').innerText = 'Error';
       }
     }
     updateData();
