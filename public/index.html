@@ -6,46 +6,78 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>My Track</title>
   <script src="https://sdk.minepi.com/pi-sdk.js"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    body { background-color: #ffffff; margin:0; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #fff; font-family: Arial, sans-serif; }
     .bg-dongker { background-color: #1e293b; } 
     .bg-ungu { background-color: #a855f7; }
     .border-kuning-b { border-bottom: 2px solid #facc15; }
     .border-kuning-t { border-top: 2px solid #facc15; }
     .border-kuning { border: 2px solid #facc15; }
-    header { height: 56px; }
-    footer { height: 56px; }
+    .text-ss { font-family: Impact, 'Arial Black', sans-serif; font-weight: 900; text-shadow: 0 3px 6px rgba(0,0,0,0.9); line-height: 1; }
+    .text-white { color: #fff; }
+    .text-yellow { color: #facc15; }
+    .text-sky { color: #7dd3fc; }
+    .text-green { color: #86efac; }
+    .text-lg { font-size: 18px; }
+    .text-base { font-size: 14px; }
+    .text-2xl { font-size: 24px; }
+    .font-black { font-weight: 900; }
+    .text-center { text-align: center; }
+    .flex { display: flex; }
+    .items-center { align-items: center; }
+    .justify-between { justify-content: space-between; }
+    .justify-center { justify-content: center; }
+    .justify-end { justify-content: flex-end; }
+    .flex-col { flex-direction: column; }
+    .mx-auto { margin-left: auto; margin-right: auto; }
+    .mt-1 { margin-top: 4px; }
+    .mb-0 { margin-bottom: 0; }
+    .mt-0\.5 { margin-top: 2px; }
+    .p-2 { padding: 8px; }
+    .px-2 { padding-left: 8px; padding-right: 8px; }
+    .px-3 { padding-left: 12px; padding-right: 12px; }
+    .pt-2 { padding-top: 8px; }
+    .pb-0 { padding-bottom: 0; }
+    .m-1 { margin: 4px; }
+    .w-full { width: 100%; }
+    .w-10 { width: 40px; }
+    .h-10 { height: 40px; }
+    .w-12 { width: 48px; }
+    .h-12 { height: 48px; }
+    .rounded-full { border-radius: 9999px; }
+    .rounded-3xl { border-radius: 24px; }
+    .rounded-lg { border-radius: 8px; }
+    .ring-2 { box-shadow: 0 0 0 2px #93c5fd; }
+    .fixed { position: fixed; }
+    .top-0 { top: 0; }
+    .bottom-0 { bottom: 0; }
+    header, footer { height: 56px; }
     main { padding-top: 56px; padding-bottom: 56px; }
-    .text-ss {
-      font-family: 'Impact', 'Arial Black', sans-serif;
-      font-weight: 900;
-      text-shadow: 0 3px 6px rgba(0,0,0,0.9);
-      line-height: 1; 
-    }
+    button { background: none; border: none; }
   </style>
 </head>
-<body class="font-sans bg-white">
+<body>
   <header class="bg-dongker px-2 border-kuning-b flex items-center justify-between fixed top-0 w-full">
-    <a href="menu.html" class="text-2xl text-yellow-400">≡</a>
+    <a href="menu.html" class="text-2xl text-yellow">≡</a>
     <h1 class="text-2xl font-black text-white text-ss">My Track</h1>
     <div class="w-10 h-10 rounded-full bg-ungu border-kuning flex items-center justify-center">
-      <span class="text-yellow-400 text-2xl font-black">π</span>
+      <span class="text-yellow text-2xl font-black">π</span>
     </div>
   </header>
 
   <main class="px-2">
-    <div class="bg-ungu border-kuning rounded-3xl px-2 pt-2 pb-0 m-1 h-[calc(100vh-112px-8px)] flex-col justify-end"> 
-      <div class="text-center mb-1">
+    <div class="bg-ungu border-kuning rounded-3xl p-2 m-1" style="height: calc(100vh - 112px - 8px); display: flex; flex-direction: column; justify-content: flex-end;"> 
+      <div class="text-center mb-0">
         <p class="text-lg text-ss text-white">Harga Pi/USDT</p>
         <p id="hargaUSDT" class="text-lg text-ss text-white">$0.1151</p>
-        <p class="text-lg text-ss text-sky-300">Pi/Rupiah</p>
+        <p class="text-lg text-ss text-sky">Pi/Rupiah</p>
         <p id="hargaIDR" class="text-lg text-ss text-white">Rp 2.070</p>
-        <p class="text-lg text-ss text-green-300">Dollar/Rupiah</p>
+        <p class="text-lg text-ss text-green">Dollar/Rupiah</p>
         <p id="kursUSDIDR" class="text-lg text-ss text-white">Rp 16.848,58</p>
-        <p id="tanggal" class="text-lg text-ss text-yellow-400">Kamis, 2 Juli 2026</p>
-        <div class="bg-blue-500 w-12 h-12 rounded-lg border-kuning ring-2 ring-blue-300 flex items-center justify-center mx-auto mt-1">
-          <p class="text-base text-ss text-white leading-none">My<br>Track</p>
+        <p id="tanggal" class="text-lg text-ss text-yellow">Kamis, 2 Juli 2026</p>
+        <div class="bg-dongker w-12 h-12 rounded-lg border-kuning ring-2 mx-auto mt-1" style="background:#3b82f6;">
+          <p class="text-base text-ss text-white" style="line-height:1;">My<br>Track</p>
         </div>
         <p class="text-base text-ss text-white mt-0.5 mb-0">Welcome to Pioneer<br>at My Track app @2026</p>
       </div>
@@ -53,36 +85,28 @@
   </main>
 
   <footer class="bg-dongker px-3 border-kuning-t flex items-center justify-center fixed bottom-0 w-full">
-    <button id="btnBayar" class="text-lg text-ss text-yellow-400 w-full">Login Pi</button>
+    <button id="btnBayar" class="text-lg text-ss text-yellow w-full">Login Pi</button>
   </footer>
 
   <script>
     let currentUser = null;
     Pi.init({ version: "2.0", sandbox: true }); 
-    const btnBayar = document.getElementById('btnBayar');
+    const btn = document.getElementById('btnBayar');
 
-    function updateTanggal() {
-      document.getElementById('tanggal').innerText = new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'Asia/Jakarta' });
-    }
-    updateTanggal(); 
+    document.getElementById('tanggal').innerText = new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'Asia/Jakarta' });
 
     async function loginPi() {
       try {
-        btnBayar.innerText = 'Login...';
-        // FIX: HAPUS 'payments' DULU BIAR GAK ERROR e.every
-        const auth = await Pi.authenticate({ 
-          scopes: ['username'], 
-          onIncompletePaymentFound: () => {} 
-        });
+        btn.innerText = 'Login...';
+        const auth = await Pi.authenticate({ scopes: ['username'], onIncompletePaymentFound: () => {} });
         currentUser = auth.user;
-        btnBayar.innerText = `Halo ${currentUser.username}`; // Test login sukses
+        btn.innerText = `Halo ${currentUser.username}`;
       } catch (err) {
-        btnBayar.innerText = 'Login Pi';
+        btn.innerText = 'Login Pi';
         alert('Login Gagal: ' + err.message); 
       }
     }
-
-    btnBayar.onclick = loginPi; // DULUIN LOGIN AJA
+    btn.onclick = loginPi;
 
     async function updateData() {
       try {
@@ -101,4 +125,4 @@
     setInterval(updateData, 3000);
   </script>
 </body>
-</html>
+    </html>
