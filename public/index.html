@@ -6,69 +6,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>My Track</title>
   <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script> <!-- PAKAI TAILWIND BIAR MUDAH ATUR UKURAN -->
+  <script>
+    tailwind.config = {
+      theme: { extend: {
+        colors: { 'ungu-tua': '#6d28d9', 'dongker': '#1e293b' } /* UNGU TUA KEBIRUAN */
+      } }
+    }
+  </script>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: #fff; font-family: Arial, sans-serif; }
-    .bg-dongker { background-color: #1e293b; } 
-    .bg-ungu { background-color: #a855f7; }
-    .border-kuning-b { border-bottom: 2px solid #facc15; }
-    .border-kuning-t { border-top: 2px solid #facc15; }
-    .border-kuning { border: 2px solid #facc15; }
-    .border-putih { border: 2px solid #ffffff; }
-    .bg-putih { background-color: #ffffff; }
-    .text-ss { font-family: Impact, 'Arial Black', sans-serif; font-weight: 900; text-shadow: 0 3px 6px rgba(0,0,0,0.9); line-height: 1.1; }
-    .text-white { color: #fff; }
-    .text-yellow { color: #facc15; }
-    .text-sky { color: #7dd3fc; }
-    .text-green { color: #86efac; }
-    .text-2xl { font-size: 24px; } /* DIPERBESAR ISI BOX */
-    .text-xl { font-size: 20px; }
-    .text-lg { font-size: 18px; }
-    .text-base { font-size: 14px; } /* BUAT WELCOME */
-    .font-black { font-weight: 900; }
-    .text-center { text-align: center; }
-    .flex { display: flex; }
-    .items-center { align-items: center; }
-    .justify-between { justify-content: space-between; }
-    .justify-center { justify-content: center; }
-    .flex-col { flex-direction: column; }
-    .mx-auto { margin-left: auto; margin-right: auto; }
-    .mt-auto { margin-top: auto; }
-    .mb-0 { margin-bottom: 0; }
-    .mt-0\.5 { margin-top: 2px; }
-    .p-2 { padding: 8px; }
-    .px-2 { padding-left: 8px; padding-right: 8px; }
-    .px-3 { padding-left: 12px; padding-right: 12px; }
-    .pt-2 { padding-top: 8px; }
-    .pb-2 { padding-bottom: 8px; }
-    .m-1 { margin: 4px; }
-    .w-full { width: 100%; }
-    .w-12 { width: 48px; }
-    .h-12 { height: 48px; }
-    .w-10 { width: 40px; }
-    .h-10 { height: 40px; }
-    .w-6 { width: 24px; }
-    .h-0\.5 { height: 2px; }
-    .rounded-full { border-radius: 9999px; }
-    .rounded-3xl { border-radius: 24px; }
-    .rounded-lg { border-radius: 8px; }
-    .ring-2 { box-shadow: 0 0 0 2px #93c5fd; }
-    .fixed { position: fixed; }
-    .top-0 { top: 0; }
-    .bottom-0 { bottom: 0; }
-    .space-y-1 > * + * { margin-top: 4px; }
-    header, footer { height: 56px; }
-    main { padding-top: 56px; padding-bottom: 56px; }
-    button { background: none; border: none; }
+   .text-ss { font-family: Impact, 'Arial Black', sans-serif; font-weight: 900; text-shadow: 0 3px 6px rgba(0,0,0,0.9); line-height: 1.1; letter-spacing: -0.5px; } /* RAMPING TINGGI */
+   .border-kuning-b { border-bottom: 2px solid #facc15; }
+   .border-kuning-t { border-top: 2px solid #facc15; }
+   .border-kuning { border: 2px solid #facc15; }
+   .border-putih { border: 2px solid #ffffff; }
   </style>
 </head>
-<body>
-  <header class="bg-dongker px-2 border-kuning-b flex items-center justify-between fixed top-0 w-full">
-    <!-- GARIS 3 MENU WARNA PUTIH -->
+<body class="bg-white">
+  <header class="bg-dongker px-2 border-kuning-b flex items-center justify-between fixed top-0 w-full h-14">
     <a href="menu.html" class="flex flex-col justify-center space-y-1 w-6 h-6">
-      <span class="w-full h-0.5 bg-putih"></span>
-      <span class="w-full h-0.5 bg-putih"></span>
-      <span class="w-full h-0.5 bg-putih"></span>
+      <span class="w-full h-0.5 bg-white"></span>
+      <span class="w-full h-0.5 bg-white"></span>
+      <span class="w-full h-0.5 bg-white"></span>
     </a>
     <h1 class="text-2xl font-black text-white text-ss">My Track</h1>
     <div class="w-10 h-10 rounded-full border-putih flex items-center justify-center">
@@ -76,23 +35,22 @@
     </div>
   </header>
 
-  <main class="px-2">
-    <div class="bg-ungu border-kuning rounded-3xl px-2 pt-2 pb-2 m-1" style="height: calc(100vh - 112px - 8px); display: flex; flex-direction: column; justify-content: space-between;"> 
-        
-        <!-- ISI BOX ATAS = text-2xl = LEBIH BESAR -->
+  <main class="px-2 pt-14 pb-14">
+    <div class="bg-ungu-tua border-kuning rounded-3xl px-2 pt-2 pb-2 m-1 flex-col justify-between" style="height: calc(100vh - 112px - 8px);">
+
+        <!-- ISI BOX = LEBIH BESAR RAMPING -->
         <div class="text-center">
-          <p id="tanggal" class="text-2xl text-ss text-white"></p> <!-- TANGGAL PUTIH -->
-          <p class="text-2xl text-ss text-yellow">Harga Pi/USDT</p> <!-- KUNING -->
-          <p id="hargaUSDT" class="text-2xl text-ss text-white">$0.1154</p>
-          <p class="text-2xl text-ss text-sky">Pi/Rupiah</p>
-          <p id="hargaIDR" class="text-2xl text-ss text-white">Rp 2.076,48</p>
-          <p class="text-2xl text-ss text-green">Dollar/Rupiah</p>
-          <p id="kursUSDIDR" class="text-2xl text-ss text-white">Rp 16.848,58</p>
+          <p id="tanggal" class="text-[26px] text-ss text-white"></p>
+          <p class="text-[26px] text-ss text-yellow">Harga Pi/USDT</p>
+          <p id="hargaUSDT" class="text-[26px] text-ss text-white">$0.1154</p>
+          <p class="text-[26px] text-ss text-sky-300">Pi/Rupiah</p>
+          <p id="hargaIDR" class="text-[26px] text-ss text-white">Rp 2.076,48</p>
+          <p class="text-[26px] text-ss text-green-300">Dollar/Rupiah</p>
+          <p id="kursUSDIDR" class="text-[26px] text-ss text-white">Rp 17.900,00</p> <!-- NO DUMMY -->
         </div>
 
-        <!-- BAWAH LOGO = SUSUNAN BARU 3 BARIS CENTER -->
         <div class="text-center mb-0">
-          <div class="w-12 h-12 rounded-lg border-kuning ring-2 mx-auto" style="background:#3b82f6; display:flex; align-items:center; justify-content:center;">
+          <div class="w-12 h-12 rounded-lg border-kuning ring-2 mx-auto bg-blue-500 flex items-center justify-center">
             <p class="text-xl text-ss text-white" style="line-height:1;">My<br>Track</p>
           </div>
           <p class="text-base text-ss text-white mt-0.5 mb-0 leading-tight">
@@ -104,9 +62,10 @@
     </div>
   </main>
 
-  <footer class="bg-dongker px-3 border-kuning-t flex items-center justify-center fixed bottom-0 w-full">
+  <footer class="bg-dongker px-3 border-kuning-t flex items-center justify-center fixed bottom-0 w-full h-14">
     <button id="btnBayar" class="text-lg text-ss text-yellow w-full">Login Pi</button>
   </footer>
+
   <script>
     let currentUser = null;
     const btn = document.getElementById('btnBayar');
@@ -119,43 +78,33 @@
     }
     updateTanggal();
 
-    async function loginPi() {
+    btn.onclick = async () => {
       try {
         btn.innerText = 'Login...';
-        const auth = await Pi.authenticate({ scopes: ['username'] }); 
-        currentUser = auth.user;
-        btn.innerText = `Halo ${currentUser.username}`;
+        const auth = await Pi.authenticate({ scopes: ['username'] });
+        btn.innerText = `Halo ${auth.user.username}`;
       } catch (err) {
         btn.innerText = 'Login Pi';
-        alert('Login Gagal: ' + err); 
+        alert('Login Gagal: ' + err);
       }
-    }
-    btn.onclick = loginPi;
+    };
 
     async function updateData() {
       try {
-        // AMBIL PI + USD/IDR LIVE, NO DUMMY
-        const res = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent('https://api.coingecko.com/api/v3/simple/price?ids=pi-network&vs_currencies=usd,idr&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false'));
+        const res = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent('https://api.coingecko.com/api/v3/simple/price?ids=pi-network&vs_currencies=usd,idr'));
         const data = await res.json();
-        
         if(data['pi-network']) {
           const usd = data['pi-network'].usd;
           const idr = data['pi-network'].idr;
-          
-          document.getElementById('hargaUSDT').innerText = `$${usd.toFixed(4)}`;
-          document.getElementById('hargaIDR').innerText = `Rp ${idr.toLocaleString('id-ID')}`;
-          
-          // HITUNG KURS DOLLAR REAL TIME DARI PI
-          const kurs = idr / usd; 
-          document.getElementById('kursUSDIDR').innerText = `Rp ${kurs.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+          document.getElementById('hargaUSDT').innerText = `$${usd.toFixed(4)}`; // LIVE
+          document.getElementById('hargaIDR').innerText = `Rp ${idr.toLocaleString('id-ID')}`; // LIVE
+          const kurs = idr / usd;
+          document.getElementById('kursUSDIDR').innerText = `Rp ${kurs.toLocaleString('id-ID', {minimumFractionDigits: 2})}`; // LIVE 17.9xx
         }
-      } catch (e) {
-        console.log('Gagal update:', e);
-      }
+      } catch (e) {}
     }
-    updateData(); 
-    setInterval(updateData, 5000); // Update tiap 5 detik
-                       </script>
-  
+    updateData();
+    setInterval(updateData, 5000);
+  </script>
 </body>
-  </html>
+      </html>
